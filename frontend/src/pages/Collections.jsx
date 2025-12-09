@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { catalogApi } from '../services/api';
 import { fallbackCategories } from '../data/fallback';
 import CategorySidePanel from '../components/navigation/CategorySidePanel';
+import ProductTile from '../components/ui/ProductTile';
 import { useProductModal } from '../contexts/ProductModalContext';
 
 const flatten = (nodes = [], prefix = '') =>
@@ -50,25 +51,10 @@ const Collections = () => {
         <h1 className="section-title">Browse the purple wardrobe</h1>
         <CategorySidePanel categories={tree} />
       </div>
-      <div className="grid gap-4 mt-6">
-        {products.length === 0 && <p className="text-sm text-gray-500">Select a capsule to load products.</p>}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
+        {products.length === 0 && <p className="text-sm text-gray-500 col-span-full text-center">Select a capsule to load products.</p>}
         {products.map((product) => (
-          <div key={product.ProductID} className="p-5 rounded-3xl bg-white shadow-sm border border-purple-50 flex flex-wrap gap-4 items-center justify-between">
-            <div>
-              <p className="text-xs uppercase tracking-[0.4em] text-purple-500">{product.CategoryName}</p>
-              <h3 className="text-xl text-purple-900 mt-2">{product.Name}</h3>
-              <p className="text-sm text-gray-600 mt-2 max-w-2xl">{product.Description}</p>
-            </div>
-            <div className="text-right">
-              <p className="text-lg font-semibold text-purple-800">Rs {product.Price?.toLocaleString()}</p>
-              <Link
-                to={`/products/${product.ProductID}`}
-                className="mt-3 inline-block px-5 py-2 rounded-full border border-purple-200 text-purple-700 text-xs tracking-[0.4em] uppercase hover:bg-purple-50 transition-colors"
-              >
-                View Details →
-              </Link>
-            </div>
-          </div>
+          <ProductTile key={product.ProductID} product={product} />
         ))}
       </div>
     </section>

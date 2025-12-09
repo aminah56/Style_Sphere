@@ -21,7 +21,7 @@ const ProductTile = ({ product }) => {
   return (
     <div className="rounded-3xl bg-white shadow-[0_20px_35px_rgba(50,10,80,0.08)] overflow-hidden border border-white">
       <div className="relative">
-        <img src={image} alt={product.Name} className="h-64 w-full object-cover" />
+        <img src={image} alt={product.Name} className="aspect-[3/4] w-full object-cover" />
         <span className="absolute top-4 left-4 text-[10px] tracking-[0.5em] uppercase bg-white/80 backdrop-blur px-3 py-1 rounded-full">
           {product.CategoryName}
         </span>

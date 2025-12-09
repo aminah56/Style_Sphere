@@ -5,6 +5,8 @@ import { useAuth } from '../contexts/AuthContext';
 import { apiClient } from '../services/api';
 import { useNavigate } from 'react-router-dom';
 
+const API_URL = import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'http://localhost:4000';
+
 const Checkout = () => {
     const { cartItems, checkout } = useCart();
     const { user } = useAuth();
@@ -33,6 +35,12 @@ const Checkout = () => {
     const subtotal = cartItems.reduce((acc, item) => acc + item.Subtotal, 0);
     const shippingCost = shippingMethod === 'express' ? 300 : 150;
     const total = subtotal + shippingCost;
+
+    const getImageUrl = (imageUrl) => {
+        if (!imageUrl) return 'https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?auto=format&fit=crop&w=900&q=80';
+        if (imageUrl.startsWith('http')) return imageUrl;
+        return `${API_URL}/${imageUrl}`;
+    };
 
     useEffect(() => {
         if (user) {
@@ -310,7 +318,7 @@ const Checkout = () => {
                         {cartItems.map(item => (
                             <div key={item.CartItemID} className="flex gap-4 items-center">
                                 <div className="relative w-16 h-20 bg-white border border-gray-200 rounded overflow-hidden">
-                                    <img src={item.ImageURL} alt={item.Name} className="w-full h-full object-cover" />
+                                    <img src={getImageUrl(item.ImageURL)} alt={item.Name} className="w-full h-full object-cover" />
                                     <span className="absolute -top-2 -right-2 w-5 h-5 bg-gray-500 text-white text-xs rounded-full grid place-items-center">
                                         {item.Quantity}
                                     </span>

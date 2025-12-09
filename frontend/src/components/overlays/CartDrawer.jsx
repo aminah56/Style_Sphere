@@ -2,6 +2,8 @@ import { useCart } from '../../contexts/CartContext';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 
+const API_URL = import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'http://localhost:4000';
+
 const CartDrawer = () => {
     const { isCartOpen, closeCart, cartItems, removeFromCart } = useCart();
     const { isAuthenticated, openAuthModal } = useAuth();
@@ -10,6 +12,12 @@ const CartDrawer = () => {
     if (!isCartOpen) return null;
 
     const subtotal = cartItems.reduce((sum, item) => sum + (item.Subtotal || 0), 0);
+
+    const getImageUrl = (imageUrl) => {
+        if (!imageUrl) return 'https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?auto=format&fit=crop&w=900&q=80';
+        if (imageUrl.startsWith('http')) return imageUrl;
+        return `${API_URL}/${imageUrl}`;
+    };
 
     return (
         <div className="fixed inset-0 z-50 flex justify-end">
@@ -48,7 +56,7 @@ const CartDrawer = () => {
                                 <div className="w-20 h-24 bg-gray-100 rounded-md overflow-hidden flex-shrink-0">
                                     {/* Placeholder for image if not available in cart item, assuming backend sends it or we fetch it */}
                                     <img
-                                        src={item.ImageURL || '/placeholder-image.jpg'}
+                                        src={getImageUrl(item.ImageURL)}
                                         alt={item.Name}
                                         className="w-full h-full object-cover"
                                     />
