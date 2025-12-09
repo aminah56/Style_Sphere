@@ -47,7 +47,8 @@ async function fixProcedures() {
                         1 AS Success,
                            CustomerID,
                            CustomerName + ' ' + LastName AS FullName,
-                           Email
+                           Email,
+                           PhoneNo
                     FROM Customer
                     WHERE CustomerID = @CustomerID;
                 END

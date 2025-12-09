@@ -2,7 +2,7 @@ const CategoryRail = ({ categories }) => (
   <section className="container mt-12">
     <div className="flex items-center justify-between mb-6">
       <h2 className="section-title">Shop by edit</h2>
-      <p className="text-xs tracking-[0.3em] uppercase text-gray-500">Inspired by Sapphire & Nishat mega menus</p>
+      <p className="text-xs tracking-[0.3em] uppercase text-gray-500">Explore our curated collections</p>
     </div>
     <div className="grid md:grid-cols-4 gap-6">
       {categories.map((category) => (

@@ -5,7 +5,7 @@ import { useAuth } from './AuthContext';
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [cartItems, setCartItems] = useState([]);
   const [wishlistItems, setWishlistItems] = useState([]);
   const [isBusy, setBusy] = useState(false);
@@ -38,12 +38,20 @@ export const CartProvider = ({ children }) => {
 
   const addToCart = async ({ variantId, quantity = 1 }) => {
     if (!user) throw new Error('Please login to add to cart.');
-    await cartApi.updateItem({
-      customerId: user.customerId,
-      variantId,
-      quantity
-    });
-    await loadData();
+    try {
+      await cartApi.updateItem({
+        customerId: user.customerId,
+        variantId,
+        quantity
+      });
+      await loadData();
+    } catch (error) {
+      if (error.response?.data?.message?.includes('FOREIGN KEY')) {
+        logout();
+        throw new Error('Session expired. Please login again.');
+      }
+      throw error;
+    }
   };
 
   const removeFromCart = async (variantId) => {

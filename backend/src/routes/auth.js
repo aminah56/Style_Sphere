@@ -70,7 +70,8 @@ router.post(
             res.json({
                 customerId: payload.CustomerID,
                 fullName: payload.FullName,
-                email: payload.Email
+                email: payload.Email,
+                phone: payload.PhoneNo
             });
         } catch (error) {
             res.status(500).json({ message: error.message });

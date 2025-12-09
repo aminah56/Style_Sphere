@@ -46,39 +46,66 @@ router.get('/sizes', async (_req, res) => {
 
 router.get('/products', async (req, res) => {
     try {
+        console.log('[CATALOG V3] Products endpoint called');
         const { categoryId } = req.query;
         const pool = await getPool();
         const request = pool.request();
 
-        let query = `
-            SELECT TOP 50
-                p.ProductID,
-                p.Name,
-                p.Description,
-                p.Price,
-                p.TotalStock,
-                c.CategoryName,
-                (SELECT TOP 1 ImageURL FROM ProductImage WHERE ProductID = p.ProductID AND IsPrimary = 1) AS ImageURL
-            FROM Product p
-            INNER JOIN Category c ON c.CategoryID = p.CategoryID
-            WHERE p.Status = 'Active'
-        `;
-
+        let query;
         if (categoryId) {
-            query += ' AND p.CategoryID = @CategoryID';
+            query = `
+                WITH CategoryTree AS (
+                    SELECT CategoryID FROM Category WHERE CategoryID = @CategoryID
+                    UNION ALL
+                    SELECT c.CategoryID FROM Category c
+                    INNER JOIN CategoryTree ct ON c.ParentCategoryID = ct.CategoryID
+                )
+                SELECT TOP 50
+                    p.ProductID,
+                    p.Name,
+                    p.Description,
+                    p.Price,
+                    ISNULL((SELECT SUM(pv.AdditionalStock) FROM ProductVariant pv WHERE pv.ProductID = p.ProductID), 0) AS TotalStock,
+                    c.CategoryName,
+                    (SELECT TOP 1 ImageURL FROM ProductImage WHERE ProductID = p.ProductID ORDER BY IsPrimary DESC, DisplayOrder) AS ImageURL
+                FROM Product p
+                INNER JOIN Category c ON c.CategoryID = p.CategoryID
+                WHERE p.Status = 'Active'
+                AND p.CategoryID IN (SELECT CategoryID FROM CategoryTree)
+                AND EXISTS (SELECT 1 FROM ProductImage pi WHERE pi.ProductID = p.ProductID)
+                ORDER BY p.ProductID
+            `;
             request.input('CategoryID', sql.Int, categoryId);
+        } else {
+            query = `
+                SELECT TOP 50
+                    p.ProductID,
+                    p.Name,
+                    p.Description,
+                    p.Price,
+                    ISNULL((SELECT SUM(pv.AdditionalStock) FROM ProductVariant pv WHERE pv.ProductID = p.ProductID), 0) AS TotalStock,
+                    c.CategoryName,
+                    (SELECT TOP 1 ImageURL FROM ProductImage WHERE ProductID = p.ProductID ORDER BY IsPrimary DESC, DisplayOrder) AS ImageURL
+                FROM Product p
+                INNER JOIN Category c ON c.CategoryID = p.CategoryID
+                WHERE p.Status = 'Active'
+                AND EXISTS (SELECT 1 FROM ProductImage pi WHERE pi.ProductID = p.ProductID)
+                ORDER BY p.ProductID
+            `;
         }
 
         if (req.query.search) {
-            query += ' AND (p.Name LIKE @Search OR p.Description LIKE @Search)';
+            // Remove ORDER BY, add search filter, then add ORDER BY back
+            query = query.replace('ORDER BY p.ProductID', '');
+            query += ' AND (p.Name LIKE @Search OR p.Description LIKE @Search) ORDER BY p.ProductID';
             request.input('Search', sql.NVarChar, `%${req.query.search}%`);
         }
 
-        query += ' ORDER BY p.DateAdded DESC';
-
         const result = await request.query(query);
+        console.log('[CATALOG V3] Returning', result.recordset.length, 'products');
         res.json(result.recordset);
     } catch (error) {
+        console.error('[CATALOG V3] Error:', error.message);
         res.status(500).json({ message: error.message });
     }
 });
@@ -95,7 +122,7 @@ router.get('/products/:productId', async (req, res) => {
                 p.Name,
                 p.Description,
                 p.Price,
-                p.TotalStock,
+                ISNULL((SELECT SUM(pv.AdditionalStock) FROM ProductVariant pv WHERE pv.ProductID = p.ProductID), 0) AS TotalStock,
                 c.CategoryName
             FROM Product p
             INNER JOIN Category c ON c.CategoryID = p.CategoryID
@@ -115,7 +142,7 @@ router.get('/products/:productId', async (req, res) => {
                 c.ColorName,
                 c.HexCode,
                 pv.SKU,
-                pv.AdditionalStock
+                pv.AdditionalStock AS StockQuantity
             FROM ProductVariant pv
             INNER JOIN Size s ON s.SizeID = pv.SizeID
             INNER JOIN Color c ON c.ColorID = pv.ColorID
@@ -140,4 +167,3 @@ router.get('/products/:productId', async (req, res) => {
 });
 
 module.exports = router;
-

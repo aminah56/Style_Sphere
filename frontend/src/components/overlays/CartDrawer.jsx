@@ -1,8 +1,10 @@
 import { useCart } from '../../contexts/CartContext';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 
 const CartDrawer = () => {
     const { isCartOpen, closeCart, cartItems, removeFromCart } = useCart();
+    const { isAuthenticated, openAuthModal } = useAuth();
     const navigate = useNavigate();
 
     if (!isCartOpen) return null;
@@ -83,10 +85,13 @@ const CartDrawer = () => {
                         <p className="text-xs text-gray-500 mb-6">Shipping and taxes calculated at checkout.</p>
                         <button
                             onClick={() => {
+                                if (!isAuthenticated) {
+                                    closeCart();
+                                    openAuthModal('login');
+                                    return;
+                                }
                                 closeCart();
-                                // Navigate to checkout or cart page if it existed
-                                // For now, maybe just keep it here or add a checkout flow later
-                                alert('Checkout flow to be implemented');
+                                navigate('/checkout');
                             }}
                             className="w-full py-4 bg-purple-900 text-white text-sm uppercase tracking-[0.2em] hover:bg-purple-800 transition-colors"
                         >

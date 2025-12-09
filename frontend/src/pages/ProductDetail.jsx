@@ -1,7 +1,19 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
+import { catalogApi } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
+import SizeChartModal from '../components/overlays/SizeChartModal';
+import { Ruler } from 'lucide-react';
+
+const API_URL = import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'http://localhost:4000';
+
+// Build image URL - if it's a relative path from DB, prepend backend URL
+const getImageUrl = (imageUrl) => {
+  if (!imageUrl) return 'https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?auto=format&fit=crop&w=900&q=80';
+  if (imageUrl.startsWith('http')) return imageUrl;
+  return `${API_URL}/${imageUrl}`;
+};
 
 const ProductDetail = () => {
   const { productId } = useParams();
@@ -17,39 +29,23 @@ const ProductDetail = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [isSizeChartOpen, setIsSizeChartOpen] = useState(false);
 
   // Fetch product details
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         setIsLoading(true);
-        // Replace with your actual API call
-        // const response = await api.get(`/products/${productId}`);
-        // setProduct(response.data);
+        const { data } = await catalogApi.getProduct(productId);
 
-        // Mock data - replace with actual API call
-        const mockProduct = {
-          ProductID: productId,
-          Name: 'Sample Product',
-          Description: 'This is a sample product description with all the details about the product.',
-          Price: '2,499',
-          CategoryName: 'T-Shirt',
-          variants: [
-            { VariantID: 1, ColorID: 'red', ColorName: 'Red', SizeID: 'S', SizeName: 'S', StockQuantity: 10, ImageURL: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab' },
-            { VariantID: 2, ColorID: 'red', ColorName: 'Red', SizeID: 'M', SizeName: 'M', StockQuantity: 5, ImageURL: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab' },
-            { VariantID: 3, ColorID: 'blue', ColorName: 'Blue', SizeID: 'M', SizeName: 'M', StockQuantity: 8, ImageURL: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab' },
-          ],
-          images: [
-            'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab',
-            'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab',
-            'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab'
-          ]
-        };
+        setProduct(data);
+        setMainImage(getImageUrl(data.images?.[0]?.ImageURL || data.ImageURL));
 
-        setProduct(mockProduct);
-        setMainImage(mockProduct.images?.[0] || '');
-        setSelectedColor(mockProduct.variants?.[0]?.ColorID || null);
-        setSelectedSize(mockProduct.variants?.[0]?.SizeID || null);
+        // Auto-select first variant
+        if (data.variants?.length > 0) {
+          setSelectedColor(data.variants[0].ColorID);
+          setSelectedSize(data.variants[0].SizeID);
+        }
       } catch (err) {
         setError('Failed to load product details');
         console.error('Error fetching product:', err);
@@ -129,7 +125,8 @@ const ProductDetail = () => {
         setError('');
       }
     } catch (err) {
-      setError('Failed to add to cart');
+      const errorMessage = err.response?.data?.message || err.message || 'Failed to add to cart';
+      setError(errorMessage);
       console.error('Error adding to cart:', err);
     }
   };
@@ -193,20 +190,23 @@ const ProductDetail = () => {
               />
             </div>
             <div className="grid grid-cols-4 gap-4">
-              {product.images?.map((img, index) => (
-                <button
-                  key={index}
-                  onClick={() => setMainImage(img)}
-                  className={`rounded-md overflow-hidden border-2 ${mainImage === img ? 'border-purple-500' : 'border-transparent'
-                    }`}
-                >
-                  <img
-                    src={img}
-                    alt={`${product.Name} - ${index + 1}`}
-                    className="w-full h-24 object-cover"
-                  />
-                </button>
-              ))}
+              {product.images?.map((img, index) => {
+                const imgUrl = getImageUrl(img.ImageURL);
+                return (
+                  <button
+                    key={index}
+                    onClick={() => setMainImage(imgUrl)}
+                    className={`rounded-md overflow-hidden border-2 ${mainImage === imgUrl ? 'border-purple-500' : 'border-transparent'
+                      }`}
+                  >
+                    <img
+                      src={imgUrl}
+                      alt={`${product.Name} - ${index + 1}`}
+                      className="w-full h-24 object-cover"
+                    />
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -245,19 +245,18 @@ const ProductDetail = () => {
               </div>
             )}
 
-            {/* Size Picker */}
-            {sizes.length > 0 && (
+            {/* Size Picker - Hide for Unstitched */}
+            {sizes.length > 0 && !product.CategoryName?.toLowerCase().includes('unstitched') && (
               <div className="mt-8">
                 <div className="flex items-center justify-between">
                   <h3 className="text-sm font-medium text-gray-900">Size</h3>
                   <button
                     type="button"
-                    className="text-sm font-medium text-purple-600 hover:text-purple-500"
-                    onClick={() => {
-                      // Size guide modal or page navigation can be added here
-                    }}
+                    className="flex items-center gap-1 text-sm font-medium text-purple-600 hover:text-purple-500"
+                    onClick={() => setIsSizeChartOpen(true)}
                   >
-                    Size guide
+                    <Ruler size={16} />
+                    Size Guide
                   </button>
                 </div>
                 <div className="mt-2 grid grid-cols-4 gap-2">
@@ -361,6 +360,10 @@ const ProductDetail = () => {
           </div>
         </div>
       </div>
+      <SizeChartModal
+        isOpen={isSizeChartOpen}
+        onClose={() => setIsSizeChartOpen(false)}
+      />
     </div>
   );
 };

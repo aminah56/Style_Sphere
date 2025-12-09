@@ -34,8 +34,8 @@ const Home = () => {
     <>
       <Hero />
       <CategoryRail categories={categories} />
-      <ProductShowcase title="Women's Royal Edit" eyebrow="Inspired by Sapphire luxury pret" products={womensLuxury} />
-      <ProductShowcase title="Menswear Spotlight" eyebrow="Tailored like Nishat couture" products={mensLine} />
+      <ProductShowcase title="Women's Royal Edit" eyebrow="Inspired by modern luxury pret" products={womensLuxury} />
+      <ProductShowcase title="Menswear Spotlight" eyebrow="Tailored for the modern gentleman" products={mensLine} />
     </>
   );
 };

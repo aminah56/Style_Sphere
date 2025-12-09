@@ -3,7 +3,7 @@ export const heroSlides = [
     id: 'luxury-pret',
     eyebrow: 'Winter 25 • Luxury Pret',
     title: 'Regal silhouettes in imperial purple',
-    copy: 'Handworked resham, organza appliqués and dramatic volumes inspired by Sapphire and Nishat runways.',
+    copy: 'Handworked resham, organza appliqués and dramatic volumes inspired by contemporary global trends.',
     cta: 'Explore Women’s Luxury Pret',
     link: '/collections/women-luxury',
     image: 'https://images.unsplash.com/photo-1518540809872-d5ac475c8708?auto=format&fit=crop&w=1600&q=80',

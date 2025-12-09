@@ -6,11 +6,10 @@ const Hero = () => (
     <div>
       <p className="text-xs tracking-[0.4em] uppercase text-purple-500">Eastern Luxury • Purple Edit</p>
       <h1 className="mt-4 text-4xl md:text-5xl font-semibold text-purple-900 leading-tight">
-        Draped in royal lilacs inspired by Sapphire & Nishat art direction.
+        Draped in royal lilacs tailored for the modern connoisseur.
       </h1>
       <p className="body-text mt-4">
-        Fluid silhouettes, modern tailoring and rich jamawar textures — built to mirror premium Pakistani fashion
-        houses. Browse stitched, unstitched and luxury pret capsules without logging in, or sign in to unlock wishlist
+        Fluid silhouettes, modern tailoring and rich jamawar textures — crafted with the finest attention to detail and heritage. Browse stitched, unstitched and luxury pret capsules without logging in, or sign in to unlock wishlist
         and cart sync.
       </p>
       <div className="mt-6 flex flex-wrap gap-3">

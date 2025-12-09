@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { catalogApi } from '../services/api';
 import { fallbackCategories } from '../data/fallback';
 import CategorySidePanel from '../components/navigation/CategorySidePanel';
@@ -61,12 +61,12 @@ const Collections = () => {
             </div>
             <div className="text-right">
               <p className="text-lg font-semibold text-purple-800">Rs {product.Price?.toLocaleString()}</p>
-              <button
-                className="mt-3 px-5 py-2 rounded-full border border-purple-200 text-purple-700 text-xs tracking-[0.4em] uppercase"
-                onClick={() => openProduct(product)}
+              <Link
+                to={`/products/${product.ProductID}`}
+                className="mt-3 inline-block px-5 py-2 rounded-full border border-purple-200 text-purple-700 text-xs tracking-[0.4em] uppercase hover:bg-purple-50 transition-colors"
               >
-                View Lookbook →
-              </button>
+                View Details →
+              </Link>
             </div>
           </div>
         ))}

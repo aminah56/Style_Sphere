@@ -1,7 +1,7 @@
 const highlights = [
   {
     title: 'Purple Rewards Club',
-    copy: 'Earn 5% back on every order + first access to sapphire-inspired capsules.'
+    copy: 'Earn 5% back on every order + first access to exclusive seasonal capsules.'
   },
   {
     title: 'Worldwide Delivery',
