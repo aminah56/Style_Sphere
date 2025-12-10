@@ -1,7 +1,22 @@
 import { useCart } from '../../contexts/CartContext';
+import { useNavigate } from 'react-router-dom';
+
+const API_URL = import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'http://localhost:4000';
 
 const WishlistDrawer = () => {
     const { isWishlistOpen, closeWishlist, wishlistItems, removeFromWishlist, addToCart } = useCart();
+    const navigate = useNavigate();
+
+    const getImageUrl = (imageUrl) => {
+        if (!imageUrl) return 'https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?auto=format&fit=crop&w=900&q=80';
+        if (imageUrl.startsWith('http')) return imageUrl;
+
+        const cleanPath = imageUrl.startsWith('/') ? imageUrl.slice(1) : imageUrl;
+        if (cleanPath.startsWith('images/')) {
+            return `${API_URL}/${cleanPath}`;
+        }
+        return `${API_URL}/images/${cleanPath}`;
+    };
 
     if (!isWishlistOpen) return null;
 
@@ -41,7 +56,7 @@ const WishlistDrawer = () => {
                             <div key={item.WishlistID} className="flex gap-4">
                                 <div className="w-20 h-24 bg-gray-100 rounded-md overflow-hidden flex-shrink-0">
                                     <img
-                                        src={item.ImageURL || '/placeholder-image.jpg'}
+                                        src={getImageUrl(item.ImageURL)}
                                         alt={item.Name}
                                         className="w-full h-full object-cover"
                                     />
@@ -64,8 +79,7 @@ const WishlistDrawer = () => {
                                     <button
                                         onClick={() => {
                                             closeWishlist();
-                                            // Logic to open product quick view or navigate to product page
-                                            // For simplicity, let's just close for now, user can navigate via product name if we link it
+                                            navigate(`/products/${item.ProductID}`);
                                         }}
                                         className="mt-3 text-xs text-purple-600 underline uppercase tracking-wider"
                                     >

@@ -12,8 +12,14 @@ const ProductTile = ({ product }) => {
   const getImageUrl = (imageUrl) => {
     if (!imageUrl) return 'https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?auto=format&fit=crop&w=900&q=80';
     if (imageUrl.startsWith('http')) return imageUrl;
+
     // Relative path from database - serve from backend
-    return `${API_URL}/${imageUrl}`;
+    // Ensure we point to the /images static route
+    const cleanPath = imageUrl.startsWith('/') ? imageUrl.slice(1) : imageUrl;
+    if (cleanPath.startsWith('images/')) {
+      return `${API_URL}/${cleanPath}`;
+    }
+    return `${API_URL}/images/${cleanPath}`;
   };
 
   const image = getImageUrl(product.ImageURL);

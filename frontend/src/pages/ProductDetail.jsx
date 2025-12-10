@@ -9,10 +9,17 @@ import { Ruler } from 'lucide-react';
 const API_URL = import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'http://localhost:4000';
 
 // Build image URL - if it's a relative path from DB, prepend backend URL
+// Build image URL - if it's a relative path from DB, prepend backend URL
 const getImageUrl = (imageUrl) => {
   if (!imageUrl) return 'https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?auto=format&fit=crop&w=900&q=80';
   if (imageUrl.startsWith('http')) return imageUrl;
-  return `${API_URL}/${imageUrl}`;
+
+  // Clean path and ensure it has /images prefix if served locally
+  const cleanPath = imageUrl.startsWith('/') ? imageUrl.slice(1) : imageUrl;
+  if (cleanPath.startsWith('images/')) {
+    return `${API_URL}/${cleanPath}`;
+  }
+  return `${API_URL}/images/${cleanPath}`;
 };
 
 const ProductDetail = () => {
@@ -287,20 +294,37 @@ const ProductDetail = () => {
               <label htmlFor="quantity" className="block text-sm font-medium text-gray-700">
                 Quantity
               </label>
-              <div className="mt-1">
-                <select
+              <div className="mt-2 flex items-center border border-gray-300 rounded-md w-fit">
+                <button
+                  type="button"
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  className="p-3 text-gray-600 hover:text-purple-600 focus:outline-none disabled:opacity-50"
+                  disabled={quantity <= 1}
+                >
+                  −
+                </button>
+                <input
+                  type="number"
                   id="quantity"
                   name="quantity"
+                  min="1"
+                  max="10"
                   value={quantity}
-                  onChange={(e) => setQuantity(parseInt(e.target.value))}
-                  className="block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-purple-500 focus:outline-none focus:ring-purple-500 sm:text-sm"
+                  onChange={(e) => {
+                    const val = parseInt(e.target.value);
+                    if (!isNaN(val)) setQuantity(Math.min(Math.max(val, 1), 10));
+                  }}
+                  readOnly
+                  className="w-12 text-center border-none focus:ring-0 p-0 text-gray-900"
+                />
+                <button
+                  type="button"
+                  onClick={() => setQuantity(Math.min(10, quantity + 1))}
+                  className="p-3 text-gray-600 hover:text-purple-600 focus:outline-none disabled:opacity-50"
+                  disabled={quantity >= 10}
                 >
-                  {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
-                    <option key={num} value={num}>
-                      {num}
-                    </option>
-                  ))}
-                </select>
+                  +
+                </button>
               </div>
             </div>
 

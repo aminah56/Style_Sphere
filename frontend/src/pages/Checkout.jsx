@@ -39,7 +39,12 @@ const Checkout = () => {
     const getImageUrl = (imageUrl) => {
         if (!imageUrl) return 'https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?auto=format&fit=crop&w=900&q=80';
         if (imageUrl.startsWith('http')) return imageUrl;
-        return `${API_URL}/${imageUrl}`;
+
+        const cleanPath = imageUrl.startsWith('/') ? imageUrl.slice(1) : imageUrl;
+        if (cleanPath.startsWith('images/')) {
+            return `${API_URL}/${cleanPath}`;
+        }
+        return `${API_URL}/images/${cleanPath}`;
     };
 
     useEffect(() => {

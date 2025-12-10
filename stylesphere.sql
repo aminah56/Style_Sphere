@@ -602,19 +602,22 @@ VALUES
     (12, 7, 9, 'WFU-FS-CHP-001', 20);
 GO
 
+
 INSERT INTO ProductImage (ProductID, ImageURL, IsPrimary, DisplayOrder)
 VALUES 
-    (1,  '/images/products/mens-cotton-kurta.jpg', 1, 1),
-    (2,  '/images/products/mens-summer-lawn-kurta.jpg', 1, 1),
-    (3,  '/images/products/mens-embroidered-waistcoat.jpg', 1, 1),
-    (4,  '/images/products/mens-prince-coat.jpg', 1, 1),
-    (5,  '/images/products/mens-silk-sherwani.jpg', 1, 1),
-    (8,  '/images/products/womens-printed-lawn.jpg', 1, 1),
-    (9,  '/images/products/womens-chiffon-formal.jpg', 1, 1),
-    (10, '/images/products/womens-bridal-luxury.jpg', 1, 1),
-    (11, '/images/products/womens-lawn-unstitched.jpg', 1, 1),
-    (12, '/images/products/womens-organza-fabric.jpg', 1, 1);
-GO
+    (1,  'images/Men/Men stitch/casual2.jpg', 1, 1),
+    (2,  'images/Men/Men stitch/casual1.jpg', 1, 1),
+    (3,  'images/Men/Men stitch/luxury3.jpg', 1, 1),
+    (4,  'images/Men/Men stitch/luxury2.jpg', 1, 1),
+    (5,  'images/Men/Men stitch/luxury1.jpg', 1, 1),
+    (8,  'images/Women/Women stitch/casual1.jpg', 1, 1),
+    (9,  'images/Women/Women stitch/casual2.jpg', 1, 1),
+    (10, 'images/Women/Women stitch/luxury1.jpg', 1, 1),
+    (11, 'images/Women/Women unstitch/casual1.jpg', 1, 1),
+    (12, 'images/Women/Women stitch/luxury2.jpg', 1, 1);
+    GO
+
+
 
 -- ==============================================================
 -- SAMPLE CUSTOMERS + DATA VIA PROCEDURES

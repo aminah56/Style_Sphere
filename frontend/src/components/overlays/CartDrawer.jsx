@@ -5,7 +5,7 @@ import { useAuth } from '../../contexts/AuthContext';
 const API_URL = import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'http://localhost:4000';
 
 const CartDrawer = () => {
-    const { isCartOpen, closeCart, cartItems, removeFromCart } = useCart();
+    const { isCartOpen, closeCart, cartItems, removeFromCart, addToCart } = useCart();
     const { isAuthenticated, openAuthModal } = useAuth();
     const navigate = useNavigate();
 
@@ -16,7 +16,12 @@ const CartDrawer = () => {
     const getImageUrl = (imageUrl) => {
         if (!imageUrl) return 'https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?auto=format&fit=crop&w=900&q=80';
         if (imageUrl.startsWith('http')) return imageUrl;
-        return `${API_URL}/${imageUrl}`;
+
+        const cleanPath = imageUrl.startsWith('/') ? imageUrl.slice(1) : imageUrl;
+        if (cleanPath.startsWith('images/')) {
+            return `${API_URL}/${cleanPath}`;
+        }
+        return `${API_URL}/images/${cleanPath}`;
     };
 
     return (
@@ -75,7 +80,22 @@ const CartDrawer = () => {
                                         {item.SizeName} / {item.ColorName}
                                     </p>
                                     <div className="flex justify-between items-center mt-4">
-                                        <p className="text-sm text-gray-600">Qty: {item.Quantity}</p>
+                                        <div className="flex items-center border border-gray-200 rounded">
+                                            <button
+                                                onClick={() => addToCart({ variantId: item.VariantID, quantity: item.Quantity - 1 })}
+                                                className="px-2 py-1 text-gray-600 hover:text-purple-600 border-r border-gray-200 disabled:opacity-50"
+                                                disabled={item.Quantity <= 1}
+                                            >
+                                                −
+                                            </button>
+                                            <span className="px-2 text-xs font-medium text-gray-900 w-8 text-center">{item.Quantity}</span>
+                                            <button
+                                                onClick={() => addToCart({ variantId: item.VariantID, quantity: item.Quantity + 1 })}
+                                                className="px-2 py-1 text-gray-600 hover:text-purple-600 border-l border-gray-200"
+                                            >
+                                                +
+                                            </button>
+                                        </div>
                                         <p className="text-sm font-semibold text-purple-900">Rs {item.Subtotal?.toLocaleString()}</p>
                                     </div>
                                 </div>
