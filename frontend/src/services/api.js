@@ -35,6 +35,7 @@ export const wishlistApi = {
 };
 
 export const ordersApi = {
-  getOrders: (customerId) => apiClient.get(`/orders/customer/${customerId}`)
+  getOrders: (customerId) => apiClient.get(`/orders/customer/${customerId}`),
+  submitReturnRequest: (orderId, payload) => apiClient.post(`/orders/${orderId}/return`, payload)
 };
 

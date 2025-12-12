@@ -677,7 +677,93 @@ INSERT INTO Wishlist (CustomerID, ProductID)
 VALUES
     (@CustomerID_1, 10),
     (@CustomerID_2, 5);
+GO
 
+-- ==============================================================
+-- MASS SEEDING (20 items per category)
+-- ==============================================================
+BEGIN TRY
+    BEGIN TRAN;
 
+    DECLARE @CatID INT;
+    DECLARE @CatName NVARCHAR(100);
+    DECLARE @i INT;
+    DECLARE @NewProductID INT;
+    DECLARE @ImageURL NVARCHAR(500);
+    DECLARE @Price DECIMAL(10,2);
+    
+    DECLARE @ImgMen NVARCHAR(MAX) = 'images/Men/Men stitch/casual2.jpg';
+    DECLARE @ImgWomen NVARCHAR(MAX) = 'images/Women/Women stitch/casual1.jpg';
+    
+    -- Cursor for leaf categories
+    DECLARE CatCursor CURSOR FOR 
+    SELECT c.CategoryID, c.CategoryName 
+    FROM Category c
+    WHERE NOT EXISTS (SELECT 1 FROM Category child WHERE child.ParentCategoryID = c.CategoryID);
 
-  
+    OPEN CatCursor;
+    FETCH NEXT FROM CatCursor INTO @CatID, @CatName;
+
+    WHILE @@FETCH_STATUS = 0
+    BEGIN
+        SET @i = 1;
+        WHILE @i <= 20
+        BEGIN
+            -- Determine Image based on category name
+            IF @CatName LIKE '%Men%' OR @CatName LIKE '%Prince%' OR @CatName LIKE '%Sherwani%'
+                SET @ImageURL = @ImgMen;
+            ELSE
+                SET @ImageURL = @ImgWomen;
+
+            -- Random Price
+            SET @Price = 2000 + ABS(CHECKSUM(NEWID()) % 13000);
+
+            -- Insert Product
+            INSERT INTO Product (CategoryID, Name, Description, Price, Status, TotalStock)
+            VALUES (@CatID, 
+                   CONCAT(@CatName, ' - Style ', @i), 
+                   'Premium quality fabric with intricate design, perfect for the season.', 
+                   @Price, 
+                   'Active', 0); -- Stock updated by trigger
+            
+            SET @NewProductID = SCOPE_IDENTITY();
+
+            -- Insert Image (Single image reused as requested)
+            INSERT INTO ProductImage (ProductID, ImageURL, IsPrimary, DisplayOrder)
+            VALUES (@NewProductID, @ImageURL, 1, 1);
+
+            -- Insert Variants (Sizes S=2, M=3, L=4)
+            -- We set stock to 0 for every 5th item to allow testing "Out of Stock" logic
+            
+            -- Size S
+            INSERT INTO ProductVariant (ProductID, SizeID, ColorID, SKU, AdditionalStock)
+            VALUES (@NewProductID, 2, 1, CONCAT('SKU-', @NewProductID, '-S'), 
+                    CASE WHEN @i % 5 = 0 THEN 0 ELSE 10 + ABS(CHECKSUM(NEWID()) % 20) END);
+
+            -- Size M
+            INSERT INTO ProductVariant (ProductID, SizeID, ColorID, SKU, AdditionalStock)
+            VALUES (@NewProductID, 3, 1, CONCAT('SKU-', @NewProductID, '-M'), 
+                    CASE WHEN @i % 5 = 0 THEN 0 ELSE 10 + ABS(CHECKSUM(NEWID()) % 20) END);
+
+            -- Size L
+            INSERT INTO ProductVariant (ProductID, SizeID, ColorID, SKU, AdditionalStock)
+            VALUES (@NewProductID, 4, 1, CONCAT('SKU-', @NewProductID, '-L'), 
+                    CASE WHEN @i % 5 = 0 THEN 0 ELSE 10 + ABS(CHECKSUM(NEWID()) % 20) END);
+
+            SET @i = @i + 1;
+        END
+
+        FETCH NEXT FROM CatCursor INTO @CatID, @CatName;
+    END
+
+    CLOSE CatCursor;
+    DEALLOCATE CatCursor;
+
+    COMMIT;
+    PRINT 'Mass seeding completed :: 20 products per category added.';
+END TRY
+BEGIN CATCH
+    IF @@TRANCOUNT > 0 ROLLBACK;
+    PRINT 'Error seeding data: ' + ERROR_MESSAGE();
+END CATCH;
+GO

@@ -1,0 +1,140 @@
+{
+  "categories": [
+    {
+      "CategoryID": 1,
+      "CategoryName": "Men's Collection"
+    },
+    {
+      "CategoryID": 2,
+      "CategoryName": "Women's Collection"
+    },
+    {
+      "CategoryID": 3,
+      "CategoryName": "Men's Stitched"
+    },
+    {
+      "CategoryID": 4,
+      "CategoryName": "Men's Unstitched"
+    },
+    {
+      "CategoryID": 5,
+      "CategoryName": "Women's Stitched"
+    },
+    {
+      "CategoryID": 6,
+      "CategoryName": "Women's Unstitched"
+    },
+    {
+      "CategoryID": 7,
+      "CategoryName": "Men's Casual"
+    },
+    {
+      "CategoryID": 8,
+      "CategoryName": "Men's Formal"
+    },
+    {
+      "CategoryID": 9,
+      "CategoryName": "Men's Luxury Pret"
+    },
+    {
+      "CategoryID": 10,
+      "CategoryName": "Men's Casual Unstitched"
+    },
+    {
+      "CategoryID": 11,
+      "CategoryName": "Men's Formal Unstitched"
+    },
+    {
+      "CategoryID": 12,
+      "CategoryName": "Women's Casual"
+    },
+    {
+      "CategoryID": 13,
+      "CategoryName": "Women's Formal"
+    },
+    {
+      "CategoryID": 14,
+      "CategoryName": "Women's Luxury Pret"
+    },
+    {
+      "CategoryID": 15,
+      "CategoryName": "Women's Casual Unstitched"
+    },
+    {
+      "CategoryID": 16,
+      "CategoryName": "Women's Formal Unstitched"
+    }
+  ],
+  "sizes": [
+    {
+      "SizeID": 7,
+      "SizeName": "FreeSize"
+    },
+    {
+      "SizeID": 4,
+      "SizeName": "L"
+    },
+    {
+      "SizeID": 3,
+      "SizeName": "M"
+    },
+    {
+      "SizeID": 2,
+      "SizeName": "S"
+    },
+    {
+      "SizeID": 5,
+      "SizeName": "XL"
+    },
+    {
+      "SizeID": 1,
+      "SizeName": "XS"
+    },
+    {
+      "SizeID": 6,
+      "SizeName": "XXL"
+    }
+  ],
+  "colors": [
+    {
+      "ColorID": 3,
+      "ColorName": "Beige"
+    },
+    {
+      "ColorID": 2,
+      "ColorName": "Black"
+    },
+    {
+      "ColorID": 8,
+      "ColorName": "Blush Pink"
+    },
+    {
+      "ColorID": 9,
+      "ColorName": "Champagne"
+    },
+    {
+      "ColorID": 5,
+      "ColorName": "Emerald Green"
+    },
+    {
+      "ColorID": 4,
+      "ColorName": "Maroon"
+    },
+    {
+      "ColorID": 7,
+      "ColorName": "Mustard"
+    },
+    {
+      "ColorID": 6,
+      "ColorName": "Royal Blue"
+    },
+    {
+      "ColorID": 10,
+      "ColorName": "Teal"
+    },
+    {
+      "ColorID": 1,
+      "ColorName": "White"
+    }
+  ]
+}

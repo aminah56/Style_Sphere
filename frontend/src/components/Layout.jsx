@@ -4,7 +4,6 @@ import Footer from './navigation/Footer';
 import AuthModal from './overlays/AuthModal';
 import ProductQuickView from './overlays/ProductQuickView';
 import ExperienceStrip from './sections/ExperienceStrip';
-import FloatingDock from './overlays/FloatingDock';
 import CartDrawer from './overlays/CartDrawer';
 import WishlistDrawer from './overlays/WishlistDrawer';
 import SearchDrawer from './overlays/SearchDrawer';
@@ -21,7 +20,6 @@ const Layout = ({ children }) => {
       <main>{children}</main>
       <ExperienceStrip />
       <Footer year={year} />
-      <FloatingDock />
       {isAuthModalOpen && <AuthModal />}
       <ProductQuickView />
       <CartDrawer />

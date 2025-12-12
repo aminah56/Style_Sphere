@@ -9,6 +9,10 @@ import { AuthProvider } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
 import { ProductModalProvider } from './contexts/ProductModalContext';
 
+import Profile from './pages/Profile';
+import Orders from './pages/Orders';
+import RefundExchange from './pages/RefundExchange';
+
 const App = () => (
   <AuthProvider>
     <CartProvider>
@@ -20,6 +24,9 @@ const App = () => (
             <Route path="/journal" element={<Journal />} />
             <Route path="/products/:productId" element={<ProductDetail />} />
             <Route path="/checkout" element={<Checkout />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/orders" element={<Orders />} />
+            <Route path="/refund-exchange/:type/:step?" element={<RefundExchange />} />
           </Routes>
         </Layout>
       </ProductModalProvider>

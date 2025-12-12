@@ -1,12 +1,9 @@
+import { BOUTIQUES } from '../../data/constants';
+
 const footerColumns = [
   {
     title: 'Boutiques',
-    items: [
-      { label: 'Lahore Gulberg', href: 'https://share.google/EETENlrPPoSFrrhq2' },
-      { label: 'Islamabad F-8', href: 'https://www.google.com/search?q=islamabad+f8&rlz=1C1VDKB_enPK1148PK1148&oq=islamabad+f8&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIHCAEQIRiPAjIHCAIQIRiPAtIBCDYwNzFqMGo3qAIIsAIB8QXusBsKlB3LBw&sourceid=chrome&ie=UTF-8' },
-      { label: 'Karachi Clifton', href: 'https://share.google/DMx4NqaLYNXtN7hQB' },
-      { label: 'Multan Cantt', href: 'https://share.google/shfge96SXtORNAgOq' }
-    ]
+    items: BOUTIQUES
   },
   {
     title: 'Customer Care',

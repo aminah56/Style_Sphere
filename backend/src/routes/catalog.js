@@ -96,16 +96,59 @@ router.get('/products', async (req, res) => {
 
         if (req.query.search) {
             // Remove ORDER BY, add search filter, then add ORDER BY back
-            query = query.replace('ORDER BY p.ProductID', '');
-            query += ' AND (p.Name LIKE @Search OR p.Description LIKE @Search) ORDER BY p.ProductID';
+            query = query.replace(/ORDER\s+BY\s+p\.ProductID/gi, '');
+            query += ' AND (p.Name LIKE @Search OR p.Description LIKE @Search)';
             request.input('Search', sql.NVarChar, `%${req.query.search}%`);
+        }
+
+        if (req.query.minPrice) {
+            if (query.match(/ORDER\s+BY\s+p\.ProductID/i)) query = query.replace(/ORDER\s+BY\s+p\.ProductID/gi, '');
+            query += ' AND p.Price >= @MinPrice';
+            request.input('MinPrice', sql.Int, parseInt(req.query.minPrice));
+        }
+
+        if (req.query.maxPrice) {
+            if (query.match(/ORDER\s+BY\s+p\.ProductID/i)) query = query.replace(/ORDER\s+BY\s+p\.ProductID/gi, '');
+            query += ' AND p.Price <= @MaxPrice';
+            request.input('MaxPrice', sql.Int, parseInt(req.query.maxPrice));
+        }
+
+        // Filter by availability (inStock/outOfStock)
+        if (req.query.inStock === 'true') {
+            if (query.match(/ORDER\s+BY\s+p\.ProductID/i)) query = query.replace(/ORDER\s+BY\s+p\.ProductID/gi, '');
+            query += ' AND ISNULL((SELECT SUM(pv.AdditionalStock) FROM ProductVariant pv WHERE pv.ProductID = p.ProductID), 0) > 0';
+        } else if (req.query.inStock === 'false') {
+            if (query.match(/ORDER\s+BY\s+p\.ProductID/i)) query = query.replace(/ORDER\s+BY\s+p\.ProductID/gi, '');
+            query += ' AND ISNULL((SELECT SUM(pv.AdditionalStock) FROM ProductVariant pv WHERE pv.ProductID = p.ProductID), 0) = 0';
+        }
+
+        // Filter by sizes (comma-separated SizeIDs)
+        if (req.query.sizes) {
+            if (query.match(/ORDER\s+BY\s+p\.ProductID/i)) query = query.replace(/ORDER\s+BY\s+p\.ProductID/gi, '');
+            const sizeIds = req.query.sizes.split(',').map(id => parseInt(id.trim())).filter(id => !isNaN(id));
+            if (sizeIds.length > 0) {
+                query += ` AND EXISTS (
+                    SELECT 1 FROM ProductVariant pv 
+                    WHERE pv.ProductID = p.ProductID 
+                    AND pv.SizeID IN (${sizeIds.map((_, i) => `@SizeID${i}`).join(',')})
+                )`;
+                sizeIds.forEach((sizeId, i) => {
+                    request.input(`SizeID${i}`, sql.Int, sizeId);
+                });
+            }
+        }
+
+        // Ensure ORDER BY is at the end
+        if (!query.match(/ORDER\s+BY\s+p\.ProductID/i)) {
+            query += ' ORDER BY p.ProductID';
         }
 
         const result = await request.query(query);
         console.log('[CATALOG V3] Returning', result.recordset.length, 'products');
         res.json(result.recordset);
     } catch (error) {
-        console.error('[CATALOG V3] Error:', error.message);
+        console.error('[CATALOG V3] Error fetching products:', error);
+        console.error('Params:', req.query);
         res.status(500).json({ message: error.message });
     }
 });
