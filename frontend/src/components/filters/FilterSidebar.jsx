@@ -41,7 +41,14 @@ const FilterSidebar = ({ isOpen, onClose, products, onFilterChange, filters }) =
     // Fetch sizes
     useEffect(() => {
         catalogApi.getSizes()
-            .then(({ data }) => setSizes(data))
+            .then(({ data }) => {
+                // Filter out unwanted sizes (XS, XL, XXL)
+                const unwantedSizes = ['XS', 'XL', 'XXL'];
+                const filteredSizes = data.filter(size =>
+                    !unwantedSizes.includes(size.SizeName.toUpperCase())
+                );
+                setSizes(filteredSizes);
+            })
             .catch(err => console.error('Failed to fetch sizes', err));
     }, []);
 
@@ -66,7 +73,7 @@ const FilterSidebar = ({ isOpen, onClose, products, onFilterChange, filters }) =
     const handleAvailabilityChange = (type) => {
         const newAvailability = { ...availability, [type]: !availability[type] };
         setAvailability(newAvailability);
-        
+
         if (type === 'inStock') {
             onFilterChange({
                 ...filters,
@@ -108,7 +115,7 @@ const FilterSidebar = ({ isOpen, onClose, products, onFilterChange, filters }) =
         const newRange = [...selectedPriceRange];
         const newValue = parseInt(value);
         newRange[index] = newValue;
-        
+
         // Ensure min doesn't exceed max and vice versa
         if (index === 0) {
             if (newValue > newRange[1]) {
@@ -119,7 +126,7 @@ const FilterSidebar = ({ isOpen, onClose, products, onFilterChange, filters }) =
                 newRange[0] = newValue;
             }
         }
-        
+
         setSelectedPriceRange(newRange);
     };
 

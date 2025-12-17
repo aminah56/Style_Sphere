@@ -20,24 +20,7 @@ GO
 
 
 
--- ==============================================================
--- DROP OBJECTS (re-runnable script)
--- ==============================================================
-IF OBJECT_ID('Payment', 'U') IS NOT NULL DROP TABLE Payment;
-IF OBJECT_ID('OrderItem', 'U') IS NOT NULL DROP TABLE OrderItem;
-IF OBJECT_ID('Orders', 'U') IS NOT NULL DROP TABLE Orders;
-IF OBJECT_ID('CartItem', 'U') IS NOT NULL DROP TABLE CartItem;
-IF OBJECT_ID('Cart', 'U') IS NOT NULL DROP TABLE Cart;
-IF OBJECT_ID('Wishlist', 'U') IS NOT NULL DROP TABLE Wishlist;
-IF OBJECT_ID('ProductImage', 'U') IS NOT NULL DROP TABLE ProductImage;
-IF OBJECT_ID('ProductVariant', 'U') IS NOT NULL DROP TABLE ProductVariant;
-IF OBJECT_ID('Product', 'U') IS NOT NULL DROP TABLE Product;
-IF OBJECT_ID('Category', 'U') IS NOT NULL DROP TABLE Category;
-IF OBJECT_ID('Size', 'U') IS NOT NULL DROP TABLE Size;
-IF OBJECT_ID('Color', 'U') IS NOT NULL DROP TABLE Color;
-IF OBJECT_ID('Address', 'U') IS NOT NULL DROP TABLE Address;
-IF OBJECT_ID('Customer', 'U') IS NOT NULL DROP TABLE Customer;
-GO
+
 
 -- ==============================================================
 -- TABLES
@@ -523,40 +506,41 @@ GO
 
 INSERT INTO Category (CategoryName, ParentCategoryID, Description)
 VALUES 
-    ('Men''s Collection', NULL, 'Complete range of men''s eastern wear'),
-    ('Women''s Collection', NULL, 'Complete range of women''s eastern wear'),
-    ('Men''s Stitched', 1, 'Ready to wear sets for men'),
-    ('Men''s Unstitched', 1, 'Fabric only for men'),
-    ('Women''s Stitched', 2, 'Ready to wear sets for women'),
-    ('Women''s Unstitched', 2, 'Fabric only for women'),
-    ('Men''s Casual', 3, 'Everyday wear'),
-    ('Men''s Formal', 3, 'Occasions & events'),
-    ('Men''s Luxury Pret', 3, 'Premium designer looks'),
-    ('Men''s Casual Unstitched', 4, 'Casual fabrics'),
-    ('Men''s Formal Unstitched', 4, 'Formal fabrics'),
-    ('Women''s Casual', 5, 'Daily wear'),
-    ('Women''s Formal', 5, 'Occasions & events'),
-    ('Women''s Luxury Pret', 5, 'Premium designer'),
-    ('Women''s Casual Unstitched', 6, 'Casual fabrics'),
-    ('Women''s Formal Unstitched', 6, 'Formal fabrics');
+    ('Men''s Collection', NULL, 'Complete range of men''s eastern wear'),--1
+    ('Women''s Collection', NULL, 'Complete range of women''s eastern wear'),--2
+    ('Men''s Stitched', 1, 'Ready to wear sets for men'),--3
+    ('Men''s Unstitched', 1, 'Fabric only for men'),--4
+    ('Women''s Stitched', 2, 'Ready to wear sets for women'),--5
+    ('Women''s Unstitched', 2, 'Fabric only for women'),--6
+    ('Men''s Casual', 3, 'Everyday wear'),--7
+    ('Men''s Formal', 3, 'Occasions & events'),--8
+    ('Men''s Luxury Pret', 3, 'Premium designer looks'),--9
+    ('Men''s Casual Unstitched', 4, 'Casual fabrics'),--10
+    ('Men''s Formal Unstitched', 4, 'Formal fabrics'),--11
+    ('Women''s Casual', 5, 'Daily wear'),--12
+    ('Women''s Formal', 5, 'Occasions & events'),--13
+    ('Women''s Luxury Pret', 5, 'Premium designer'),--14
+    ('Women''s Casual Unstitched', 6, 'Casual fabrics'),--15
+    ('Women''s Formal Unstitched', 6, 'Formal fabrics');--16
 GO
 
 INSERT INTO Size (SizeName)
-VALUES ('XS'), ('S'), ('M'), ('L'), ('XL'), ('XXL'), ('FreeSize');
+VALUES  ('S'), ('M'), ('L'),  ('FreeSize');
 GO
 
 INSERT INTO Color (ColorName, HexCode)
 VALUES 
-    ('White', '#FFFFFF'),
-    ('Black', '#000000'),
-    ('Beige', '#F5F5DC'),
-    ('Maroon', '#800000'),
-    ('Emerald Green', '#50C878'),
-    ('Royal Blue', '#4169E1'),
-    ('Mustard', '#FFDB58'),
-    ('Blush Pink', '#FFC0CB'),
-    ('Champagne', '#FAD6A5'),
-    ('Teal', '#008080');
+    ('White', '#FFFFFF'),--1
+    ('Black', '#000000'),--2
+    ('Beige', '#F5F5DC'),--3
+    ('Maroon', '#800000'),--4
+    ('Emerald Green', '#065312'),--5
+    ('Royal Blue', '#4169E1'),--6
+    ('Mustard', '#FFDB58'),--7
+    ('Blush Pink', '#FFC0CB'),--8
+    ('Champagne', '#FAD6A5'),--9
+    ('Teal', '#949494'),--10
+    ('Brown','#867132');--11
 GO
 
 -- ==============================================================
@@ -565,57 +549,325 @@ GO
 
 INSERT INTO Product (CategoryID, Name, Description, Price)
 VALUES 
-    (7,  'Cotton Kurta Set', 'Breathable cotton kurta shalwar for daily wear.', 3499.00),
-    (7,  'Summer Lawn Kurta', 'Lightweight lawn kurta perfect for daytime outings.', 2999.00),
-    (8,  'Embroidered Kurta Waistcoat', 'Formal kurta waistcoat combo with intricate embroidery.', 8999.00),
-    (8,  'Classic Prince Coat', 'Structured prince coat for special events.', 15999.00),
-    (9,  'Silk Sherwani', 'Premium silk sherwani with handcrafted details.', 24999.00),
-    (10, 'Everyday Cotton Fabric', '5 meter cotton fabric for casual stitching.', 1999.00),
-    (11, 'Jamawar Fabric Pack', 'Luxury jamawar fabric for formal tailoring.', 4499.00),
-    (12, 'Printed Lawn 2 Piece', 'Printed kurta with trousers for women.', 3999.00),
-    (13, 'Chiffon Embroidered Suit', 'Formal chiffon 3-piece with embellishments.', 11999.00),
-    (14, 'Bridal Luxury Pret', 'Premium bridal-ready luxury pret ensemble.', 29999.00),
-    (15, 'Lawn 3 Piece Unstitched', 'Printed lawn fabric set for home tailoring.', 3499.00),
-    (16, 'Organza Embroidered Fabric', 'Organza fabric with detailed embroidery.', 9999.00);
+    (7,  'Cotton Kurta Set', 'Breathable cotton kurta shalwar for daily wear.', 3499.00),--3
+    (7,  'Summer Lawn Kurta', 'Lightweight lawn kurta perfect for daytime outings.', 2999.00),--4
+    (8,  'Embroidered Kurta Waistcoat', 'Formal kurta waistcoat combo with intricate embroidery.', 8999.00),--5
+    (8,  'Classic Prince Coat', 'Structured prince coat for special events.', 15999.00),--6
+    (9,  'Silk Sherwani', 'Premium silk sherwani with handcrafted details.', 24999.00),--7
+    (10, 'Everyday Cotton Fabric', '5 meter cotton fabric for casual stitching.', 1999.00),--8
+    (11, 'Jamawar Pack', 'Luxury jamawar fabric for formal tailoring.', 4499.00),--9
+    (12, 'Printed Lawn 2 Piece', 'Printed kurta with trousers for women.', 3999.00),--10
+    (13, '2P Chiffon Embroidered Suit', 'Formal chiffon 2-piece with embellishments.', 11999.00),--11
+    (14, 'Bridal Luxury Pret', 'Premium bridal-ready luxury pret ensemble.', 29999.00),--12
+    (15, 'Lawn 3 Piece Unstitched', 'Printed lawn fabric set for home tailoring.', 3499.00),--13
+    (16, 'Organza Embroidered Fabric', 'Organza fabric with detailed embroidery.', 9999.00), --14
+     (7,  'Winter Khaddar Kurta', 'Warm khaddar kurta ideal for winter wear.', 4999.00), ---15
+    (8,  'Embroidered Velvet Waistcoat', 'Velvet waistcoat with traditional embroidery.', 10999.00),--16
+    (9,  'Royal Jamawar Sherwani', 'Traditional jamawar sherwani for weddings.', 28999.00),--17
+    (10, 'Premium Linen Fabric', '5 meter breathable linen fabric.', 2499.00),  --18
+    (11, 'Raw Silk Fabric Pack', 'High-quality raw silk for formal tailoring.', 5999.00), --19
+    (12, 'Cambric 2 Piece Suit', 'Soft cambric kurta and trousers set.', 4599.00),--20
+    (13, 'Velvet Embroidered Suit', 'Luxury velvet 3-piece for winter events.', 13999.00), --21
+    (14, 'Formal Luxury Pret', 'Elegant luxury pret for formal occasions.', 18999.00), --22
+    (15, 'Khaddar 3 Piece Unstitched', 'Winter khaddar fabric set.', 5499.00), --23
+    (16, 'Net Embroidered Fabric', 'Delicate net fabric with embroidery.', 8999.00), --24
+   (7,  'Classic Cotton Kurta Set', 'Soft breathable cotton kurta shalwar suitable for everyday comfort.', 3699.00), --25
+(7,  'Printed Summer Lawn Kurta', 'Lightweight printed lawn kurta ideal for warm daytime wear.', 3199.00),--26
+(8,  'Embroidered Kurta Waistcoat Set', 'Elegant kurta with embroidered waistcoat for formal occasions.', 9299.00), --27
+(8,  'Traditional Prince Coat', 'Well-tailored prince coat designed for weddings and formal events.', 16499.00), --28
+(9,  'Luxury Silk Sherwani', 'Premium quality silk sherwani with fine handcrafted detailing.', 25499.00),--29
+(10, 'Daily Wear Cotton Fabric', '5 meter cotton fabric designed for casual stitched outfits.', 2099.00),  --30
+(11, 'Premium Jamawar Fabric Pack', 'Rich jamawar fabric suitable for formal and festive tailoring.', 4699.00), --31
+(12, 'Printed Lawn 2 Piece Suit', 'Stylish printed lawn kurta paired with matching trousers.', 4199.00), --32
+(13, 'Embroidered Suit', 'Formal 3-piece suit featuring delicate embroidery.', 12399.00), --33
+(14, 'Bridal Luxury Pret Ensemble', 'Designer luxury pret outfit crafted for bridal and festive wear.', 30499.00),--34
+(15, 'Lawn 3 Piece Unstitched Set', 'Printed lawn unstitched fabric set for custom tailoring.', 3699.00),--35
+(16, 'Organza Embroidered Fabric', 'Fine organza fabric enhanced with elegant embroidered patterns.', 10399.00), --36
+(7,  'Winter Khaddar Kurta Set', 'Warm khaddar kurta designed for comfortable winter wear.', 5199.00),--37
+(8,  'Velvet Embroidered Waistcoat', 'Premium velvet waistcoat featuring traditional embroidery.', 11399.00),--38
+(9,  'Royal Jamawar Silk Sherwani', 'Traditional jamawar sherwani ideal for wedding ceremonies.', 29499.00), --39
+(10, 'Premium Linen Fabric Pack', '5 meter high-quality linen fabric offering breathability and comfort.', 2699.00),--40
+(11, 'Raw Silk Fabric Collection', 'Superior raw silk fabric designed for formal stitched outfits.', 6299.00), --41
+(12, 'Cambric 2 Piece Suit', 'Soft cambric kurta with trousers for semi-formal daily wear.', 4799.00), --42
+(13, ' Embroidered Winter Suit', 'Luxury 3-piece suit crafted for winter occasions.', 14499.00),--43
+(14, 'Elegant Luxury Pret Outfit', 'Refined luxury pret designed for formal evening events.', 19499.00),--44
+(15, 'Khaddar 3 Piece Unstitched Set', 'Winter khaddar fabric set ideal for custom tailoring.', 5799.00),--45
+(16, 'Net Embroidered Fabric', 'Delicate net fabric featuring detailed embroidery work.', 9299.00), --46
+ (12, 'Printed Lawn cord set', 'Printed kurta with trousers for women.', 4050.00),--47
+ (12, 'Printed Lawn 2P Suit', 'Stylish printed lawn kurta paired with matching trousers.', 4199.00),--48
+ (13, '3P silk Embroidered Suit', 'Formal silk 3-piece with embellishments.', 11999.00),--49
+  (14, 'Bridal Luxury Pret', 'Premium bridal-ready luxury pret ensemble.', 29999.00),--50
+  (14, 'Elegant Luxury Pret Outfit', 'Refined luxury pret designed for formal evening events.', 19499.00),--51
+  (15, 'Khaddar 3 Piece Unstitched Set', 'Winter khaddar fabric set ideal for custom tailoring.', 5799.00),--52
+       (16, 'Organza Embroidered Fabric', 'Organza fabric with detailed embroidery.', 9999.00); --53
 GO
 
 INSERT INTO ProductVariant (ProductID, SizeID, ColorID, SKU, AdditionalStock)
-VALUES 
-    (1, 3, 1, 'MCS-M-WHT-001', 25),
-    (1, 4, 2, 'MCS-L-BLK-001', 20),
-    (2, 3, 7, 'SLK-M-MUS-001', 22),
-    (2, 4, 3, 'SLK-L-BGE-001', 18),
-    (3, 3, 4, 'MFW-M-MAR-001', 15),
-    (3, 4, 6, 'MFW-L-BLU-001', 12),
-    (4, 4, 2, 'MPC-L-BLK-001', 10),
-    (4, 5, 9, 'MPC-XL-CHP-001', 8),
-    (5, 4, 9, 'MSH-L-CHP-001', 6),
-    (5, 5, 4, 'MSH-XL-MAR-001', 5),
-    (6, 7, 3, 'MCU-FS-BGE-001', 40),
-    (7, 7, 4, 'MFU-FS-MAR-001', 30),
-    (8, 2, 8, 'WLC-S-PNK-001', 28),
-    (8, 3, 5, 'WLC-M-GRN-001', 26),
-    (9, 3, 4, 'WFS-M-MAR-001', 12),
-    (9, 4, 6, 'WFS-L-BLU-001', 10),
-    (10, 3, 9, 'WLP-M-CHP-001', 6),
-    (11, 7, 7, 'WCU-FS-MUS-001', 32),
-    (12, 7, 9, 'WFU-FS-CHP-001', 20);
+VALUES
+-- Product 1
+(1, 1, 3, 'SKU-1-S-001', 25),
+(1, 2, 3, 'SKU-1-M-001', 25),
+(1, 3, 3, 'SKU-1-L-001', 25),
+
+-- Product 2
+(2, 1, 11, 'SKU-2-S-001', 25),
+(2, 2, 11, 'SKU-2-M-001', 25),
+(2, 3, 11, 'SKU-2-L-001', 25),
+  
+
+-- Product 3
+(3, 1, 5, 'SKU-3-S-001', 25),
+(3, 2, 5, 'SKU-3-M-001', 25),
+(3, 3, 5, 'SKU-3-L-001', 25),
+
+-- Product 4
+(4, 1, 11, 'SKU-4-S-001', 25),
+(4, 2, 11, 'SKU-4-M-001', 25),
+(4, 3, 11, 'SKU-4-L-001', 25),
+
+-- Product 5
+(5, 1, 2, 'SKU-5-S-001', 25),
+(5, 2, 2, 'SKU-5-M-001', 25),
+(5, 3, 2, 'SKU-5-L-001', 25),
+
+-- Product 6
+(6, 1, 1, 'SKU-6-S-001', 25),
+(6, 2, 1, 'SKU-6-M-001', 25),
+(6, 3, 1, 'SKU-6-L-001', 25),
+
+-- Product 7
+(7, 1, 4, 'SKU-7-S-001', 25),
+(7, 2, 4, 'SKU-7-M-001', 25),
+(7, 3, 4, 'SKU-7-L-001', 25),
+
+-- Product 8
+(8, 1, 10, 'SKU-10-S-001', 25),
+(8, 2, 10, 'SKU-10-M-001', 25),
+(8, 3, 10, 'SKU-10-L-001', 25),
+
+-- Product 9
+(9, 1, 9, 'SKU-11-S-001', 25),
+(9, 2, 9, 'SKU-11-M-001', 25),
+(9, 3, 9, 'SKU-11-L-001', 25),
+
+-- Product 12
+(12, 1, 8, 'SKU-12-S-001', 25),
+(12, 2, 8, 'SKU-12-M-001', 25),
+(12, 3, 8, 'SKU-12-L-001', 25),
+
+-- Product 13
+(13, 1, 5, 'SKU-15-S-001', 25),
+(13, 2, 5, 'SKU-15-M-001', 25),
+(13, 3, 5, 'SKU-15-L-001', 25),
+
+-- Product 14
+(14, 1, 8, 'SKU-16-S-001', 25),
+(14, 2, 8, 'SKU-16-M-001', 25),
+(14, 3, 8, 'SKU-16-L-001', 25),
+
+-- Product 17
+(17, 1, 10, 'SKU-17-S-001', 25),
+(17, 2, 10, 'SKU-17-M-001', 25),
+(17, 3, 10, 'SKU-17-L-001', 25),
+
+-- Product 20
+(20, 1, 6, 'SKU-20-S-001', 25),
+(20, 2, 6, 'SKU-20-M-001', 25),
+(20, 3, 6, 'SKU-20-L-001', 25),
+
+-- Product 21
+(21, 1, 2, 'SKU-21-S-001', 25),
+(21, 2, 2, 'SKU-21-M-001', 25),
+(21, 3, 2, 'SKU-21-L-001', 25),
+
+-- Product 22
+(22, 1, 8, 'SKU-22-S-001', 25),
+(22, 2, 8, 'SKU-22-M-001', 25),
+(22, 3, 8, 'SKU-22-L-001', 25),
+
+-- Product 25
+(25, 1, 8, 'SKU-25-S-001', 25),
+(25, 2, 8, 'SKU-25-M-001', 25),
+(25, 3, 8, 'SKU-25-L-001', 25),
+
+-- Product 26
+(26, 1, 1, 'SKU-26-S-001', 25),
+(26, 2, 1, 'SKU-26-M-001', 25),
+(26, 3, 1, 'SKU-26-L-001', 25),
+
+-- Product 27
+(27, 1, 6, 'SKU-27-S-001', 25),
+(27, 2, 6, 'SKU-27-M-001', 25),
+(27, 3, 6, 'SKU-27-L-001', 25),
+
+-- Product 28
+(28, 1, 10, 'SKU-28-S-001', 25),
+(28, 2, 10, 'SKU-28-M-001', 25),
+(28, 3, 10, 'SKU-28-L-001', 25),
+
+
+-- Product 29
+(29, 1, 10, 'SKU-29-S-001', 25),
+(29, 2, 10, 'SKU-29-M-001', 25),
+(29, 3, 10, 'SKU-29-L-001', 25),
+
+-- Product 32
+(32, 1, 2, 'SKU-32-S-001', 25),
+(32, 2, 2, 'SKU-32-M-001', 25),
+(32, 3, 2, 'SKU-32-L-001', 25),
+
+
+-- Product 33
+(33, 1, 4, 'SKU-33-S-001', 25),
+(33, 2, 4, 'SKU-33-M-001', 25),
+(33, 3, 4, 'SKU-33-L-001', 25),
+
+-- Product 34
+(34, 1, 8, 'SKU-34-S-001', 25),
+(34, 2, 8, 'SKU-34-M-001', 25),
+(34, 3, 8, 'SKU-34-L-001', 25),
+
+-- Product 37
+(37, 1, 10, 'SKU-37-S-001', 25),
+(37, 2, 10, 'SKU-37-M-001', 25),
+(37, 3, 10, 'SKU-37-L-001', 25),
+
+-- Product 38
+(38, 1, 3, 'SKU-38-S-001', 25),
+(38, 2, 3, 'SKU-38-M-001', 25),
+(38, 3, 3, 'SKU-38-L-001', 25),
+
+-- Product 39
+(39, 1, 11, 'SKU-39-S-001', 25),
+(39, 2, 11, 'SKU-39-M-001', 25),
+(39, 3, 11, 'SKU-39-L-001', 25),
+
+-- Product 42
+(42, 1, 8, 'SKU-42-S-001', 25),
+(42, 2, 8, 'SKU-42-M-001', 25),
+(42, 3, 8, 'SKU-42-L-001', 25),
+
+
+-- Product 43
+(43, 1, 5, 'SKU-43-S-001', 25),
+(43, 2, 5, 'SKU-43-M-001', 25),
+(43, 3, 5, 'SKU-43-L-001', 25),
+
+-- Product 44
+(44, 1, 8, 'SKU-44-S-001', 25),
+(44, 2, 8, 'SKU-44-M-001', 25),
+(44, 3, 8, 'SKU-44-L-001', 25),
+
+-- Product 47
+(47, 1, 7, 'SKU-47-S-001', 25),
+(47, 2, 7, 'SKU-47-M-001', 25),
+(47, 3, 7, 'SKU-47-L-001', 25),
+
+-- Product 48
+(48, 1, 7, 'SKU-48-S-001', 25),
+(48, 2, 7, 'SKU-48-M-001', 25),
+(48, 3, 7, 'SKU-48-L-001', 25),
+
+-- Product 49
+(49, 1, 4, 'SKU-49-S-001', 25),
+(49, 2, 4, 'SKU-49-M-001', 25),
+(49, 3, 4, 'SKU-49-L-001', 25),
+
+-- Product 50
+(50, 1, 5, 'SKU-50-S-001', 25),
+(50, 2, 5, 'SKU-50-M-001', 25),
+(50, 3, 5, 'SKU-50-L-001', 25),
+
+-- Product 51
+(51, 1, 5, 'SKU-51-S-001', 25),
+(51, 2, 5, 'SKU-51-M-001', 25),
+(51, 3, 5, 'SKU-51-L-001', 25),
+
+
+---------unstitched
+
+(8, 4, 10, 'SKU-8-FS-001', 50),
+(9, 4, 9, 'SKU-9-FS-001', 50),
+(13, 4, 1, 'SKU-13-FS-001', 50),
+(14, 4, 9, 'SKU-14-FS-001', 50),
+(18, 4, 6, 'SKU-18-FS-001', 50),
+(19, 4, 2, 'SKU-19-FS-001', 50),
+(23, 4, 6, 'SKU-23-FS-001', 50),
+(24, 4, 4, 'SKU-24-FS-001', 50),
+(30, 4, 2, 'SKU-30-FS-001', 50),
+(31, 4, 7, 'SKU-31-FS-001', 50),
+(35, 4, 1, 'SKU-35-FS-001', 50),
+(36, 4, 2, 'SKU-36-FS-001', 50),
+(40, 4, 2, 'SKU-40-FS-001', 50),
+(41, 4, 4, 'SKU-41-FS-001', 50),
+(45, 4, 1, 'SKU-45-FS-001', 50),
+(46, 4, 4, 'SKU-46-FS-001', 50);
 GO
+
+truncate table ProductImage
 
 
 INSERT INTO ProductImage (ProductID, ImageURL, IsPrimary, DisplayOrder)
 VALUES 
-    (1,  'images/Men/Men stitch/casual2.jpg', 1, 1),
-    (2,  'images/Men/Men stitch/casual1.jpg', 1, 1),
-    (3,  'images/Men/Men stitch/luxury3.jpg', 1, 1),
-    (4,  'images/Men/Men stitch/luxury2.jpg', 1, 1),
-    (5,  'images/Men/Men stitch/luxury1.jpg', 1, 1),
-    (8,  'images/Women/Women stitch/casual1.jpg', 1, 1),
-    (9,  'images/Women/Women stitch/casual2.jpg', 1, 1),
-    (10, 'images/Women/Women stitch/luxury1.jpg', 1, 1),
-    (11, 'images/Women/Women unstitch/casual1.jpg', 1, 1),
-    (12, 'images/Women/Women stitch/luxury2.jpg', 1, 1);
-    GO
+    (1,  'images/Men/Men stitched/1.jpeg', 1, 1),
+    (2,  'images/Men/Men stitched/2.jpeg', 1, 1),
+    (3,  'images/Men/Men stitched/3.jpeg', 1, 1),
+    (4,  'images/Men/Men stitched/4.jpeg', 1, 1),
+    (5,  'images/Men/Men stitched/5.jpeg', 1, 1),
+    (6,  'images/Men/Men stitched/11.jpeg', 1, 1),
+    (7,  'images/Men/Men stitched/7.jpeg', 1, 1),
+    (8, 'images/Men/Men stitched/8.jpeg', 1, 1),
+    (9, 'images/Women/Women stitch/luxury1.jpg', 1, 1),
+    (10, 'images/Women/Women stitch/casual1.png', 1, 1),
+    (11, 'images/Women/Women unstitch/casual2.jpg', 1, 1),
+    (12, 'images/Women/Women unstitch/luxury2.jpg', 1, 1),
+    (13, 'images/Men/Men stitched/casual1.jpeg', 1, 1),
+    (14, 'images/Men/Men stitched/8.png', 1, 1),
+    (15, 'images/Men/Men stitched/luxury2.png', 1, 1),
+    (16, 'images/Men/Men stitched/20.png', 1, 1),
+    (17, 'images/Men/Men stitched/22.png', 1, 1),
+    (18, 'images/Women/Women stitch/4.png', 1, 1),
+    (19, 'images/Women/Women stitch/5.png', 1, 1),
+    (20, 'images/Women/Women stitch/luxury7.jpg', 1, 1),
+    (21, 'images/Women/Women unstitch/casual1.jpg', 1, 1),
+    (22, 'images/Women/Women unstitch/4.png', 1, 1),
+     (23, 'images/Men/Men stitched/casual2.jpeg', 1, 1),
+(24, 'images/Men/Men stitched/12.jpeg', 1, 1),
+(25, 'images/Men/Men stitched/13.jpeg', 1, 1),
+(26, 'images/Men/Men stitched/14.jpeg', 1, 1),
+(27, 'images/Men/Men stitched/luxury1.jpeg', 1, 1),
+(28, 'images/Men/Men stitched/21.png', 1, 1),
+(29, 'images/Men/Men stitched/luxury3.png', 1, 1),
+(30, 'images/Women/Women stitch/3.png', 1, 1),
+(31, 'images/Women/Women stitch/formal6.jpg', 1, 1),
+(32, 'images/Women/Women stitch/7.png', 1, 1),
+(33, 'images/Women/Women unstitch/1.png', 1, 1),
+(34, 'images/Women/Women unstitch/luxury6.jpg', 1, 1),
+(35, 'images/Men/Men stitched/casual1.jpeg', 1, 1),
+(36, 'images/Men/Men stitched/18.png', 1, 1),
+(37, 'images/Men/Men stitched/19.png', 1, 1),
+(38, 'images/Men/Men stitched/24.png', 1, 1),
+(39, 'images/Men/Men stitched/23.png', 1, 1),
+(40, 'images/Women/Women stitch/2.jpg', 1, 1),
+(41, 'images/Women/Women stitch/luxury5.jpg', 1, 1),
+(42, 'images/Women/Women stitch/luxury3.jpg', 1, 1),
+(43, 'images/Women/Women unstitch/casual3.jpg', 1, 1),
+(44, 'images/Women/Women unstitch/5.png', 1, 1),
+ (45, 'images/Women/Women stitch/casual3.jpg', 1, 1),
+  (46, 'images/Women/Women stitch/casual4.jpg', 1, 1),
+   (47, 'images/Women/Women stitch/formal6.jpg', 1, 1),
+     (48, 'images/Women/Women stitch/8.png', 1, 1),
+       (49, 'images/Women/Women stitch/luxury4.jpg', 1, 1),
+         (50, 'images/Women/Women unstitch/2.png', 1, 1),
+         (51, 'images/Women/Women unstitch/3.png', 1, 1);
+       
+GO
+
+
+
+
+ select * from product
+
 
 
 
@@ -679,91 +931,218 @@ VALUES
     (@CustomerID_2, 5);
 GO
 
+select * from Product
+
+
 -- ==============================================================
--- MASS SEEDING (20 items per category)
+-- UPDATE ORDER STATUS CONSTRAINT FOR REFUND/EXCHANGE
 -- ==============================================================
-BEGIN TRY
-    BEGIN TRAN;
+IF OBJECT_ID('CHK_Order_Status', 'C') IS NOT NULL 
+BEGIN
+    ALTER TABLE Orders DROP CONSTRAINT CHK_Order_Status;
+END
+GO
 
-    DECLARE @CatID INT;
-    DECLARE @CatName NVARCHAR(100);
-    DECLARE @i INT;
-    DECLARE @NewProductID INT;
-    DECLARE @ImageURL NVARCHAR(500);
-    DECLARE @Price DECIMAL(10,2);
+ALTER TABLE Orders
+ADD CONSTRAINT CHK_Order_Status CHECK (OrderStatus IN ('Pending','Processing','Shipped','Delivered','Cancelled', 'Refunded', 'Exchanged'));
+GO
+
+-- ==============================================================
+-- PROCEDURE FOR REFUND/EXCHANGE
+-- ==============================================================
+CREATE OR ALTER PROCEDURE sp_ProcessOrderReturn
+    @OrderID INT,
+    @RequestType NVARCHAR(20) -- 'Refunded' or 'Exchanged'
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DECLARE @CurrentStatus NVARCHAR(20);
     
-    DECLARE @ImgMen NVARCHAR(MAX) = 'images/Men/Men stitch/casual2.jpg';
-    DECLARE @ImgWomen NVARCHAR(MAX) = 'images/Women/Women stitch/casual1.jpg';
+    SELECT @CurrentStatus = OrderStatus FROM Orders WHERE OrderID = @OrderID;
     
-    -- Cursor for leaf categories
-    DECLARE CatCursor CURSOR FOR 
-    SELECT c.CategoryID, c.CategoryName 
-    FROM Category c
-    WHERE NOT EXISTS (SELECT 1 FROM Category child WHERE child.ParentCategoryID = c.CategoryID);
-
-    OPEN CatCursor;
-    FETCH NEXT FROM CatCursor INTO @CatID, @CatName;
-
-    WHILE @@FETCH_STATUS = 0
+    IF @CurrentStatus IS NULL
     BEGIN
-        SET @i = 1;
-        WHILE @i <= 20
-        BEGIN
-            -- Determine Image based on category name
-            IF @CatName LIKE '%Men%' OR @CatName LIKE '%Prince%' OR @CatName LIKE '%Sherwani%'
-                SET @ImageURL = @ImgMen;
-            ELSE
-                SET @ImageURL = @ImgWomen;
-
-            -- Random Price
-            SET @Price = 2000 + ABS(CHECKSUM(NEWID()) % 13000);
-
-            -- Insert Product
-            INSERT INTO Product (CategoryID, Name, Description, Price, Status, TotalStock)
-            VALUES (@CatID, 
-                   CONCAT(@CatName, ' - Style ', @i), 
-                   'Premium quality fabric with intricate design, perfect for the season.', 
-                   @Price, 
-                   'Active', 0); -- Stock updated by trigger
-            
-            SET @NewProductID = SCOPE_IDENTITY();
-
-            -- Insert Image (Single image reused as requested)
-            INSERT INTO ProductImage (ProductID, ImageURL, IsPrimary, DisplayOrder)
-            VALUES (@NewProductID, @ImageURL, 1, 1);
-
-            -- Insert Variants (Sizes S=2, M=3, L=4)
-            -- We set stock to 0 for every 5th item to allow testing "Out of Stock" logic
-            
-            -- Size S
-            INSERT INTO ProductVariant (ProductID, SizeID, ColorID, SKU, AdditionalStock)
-            VALUES (@NewProductID, 2, 1, CONCAT('SKU-', @NewProductID, '-S'), 
-                    CASE WHEN @i % 5 = 0 THEN 0 ELSE 10 + ABS(CHECKSUM(NEWID()) % 20) END);
-
-            -- Size M
-            INSERT INTO ProductVariant (ProductID, SizeID, ColorID, SKU, AdditionalStock)
-            VALUES (@NewProductID, 3, 1, CONCAT('SKU-', @NewProductID, '-M'), 
-                    CASE WHEN @i % 5 = 0 THEN 0 ELSE 10 + ABS(CHECKSUM(NEWID()) % 20) END);
-
-            -- Size L
-            INSERT INTO ProductVariant (ProductID, SizeID, ColorID, SKU, AdditionalStock)
-            VALUES (@NewProductID, 4, 1, CONCAT('SKU-', @NewProductID, '-L'), 
-                    CASE WHEN @i % 5 = 0 THEN 0 ELSE 10 + ABS(CHECKSUM(NEWID()) % 20) END);
-
-            SET @i = @i + 1;
-        END
-
-        FETCH NEXT FROM CatCursor INTO @CatID, @CatName;
+        THROW 51008, 'Order not found.', 1;
     END
 
-    CLOSE CatCursor;
-    DEALLOCATE CatCursor;
+    -- "Pending and Processing orders cannot be refunded or exchanged only delivered orders"
+    IF @CurrentStatus IN ('Pending', 'Processing', 'Shipped') 
+    BEGIN
+        THROW 51009, 'Only delivered orders can be refunded or exchanged.', 1;
+    END
 
-    COMMIT;
-    PRINT 'Mass seeding completed :: 20 products per category added.';
-END TRY
-BEGIN CATCH
-    IF @@TRANCOUNT > 0 ROLLBACK;
-    PRINT 'Error seeding data: ' + ERROR_MESSAGE();
-END CATCH;
+    -- "Once an order is refunded or exchanged donot give option of refund and exchange again"
+    IF @CurrentStatus IN ('Refunded', 'Exchanged')
+    BEGIN
+        THROW 51010, 'Order has already been processed for return.', 1;
+    END
+    
+    IF @CurrentStatus = 'Delivered'
+    BEGIN
+        IF @RequestType NOT IN ('Refunded', 'Exchanged')
+        BEGIN
+             THROW 51011, 'Invalid return type. Must be Refunded or Exchanged.', 1;
+        END
+
+        UPDATE Orders 
+        SET OrderStatus = @RequestType 
+        WHERE OrderID = @OrderID;
+        
+        SELECT 'Order marked as ' + @RequestType AS Message;
+    END
+    ELSE
+    BEGIN
+        -- Should catch Cancelled or other weird states if any
+         THROW 51012, 'Order status does not allow return.', 1;
+    END
+END;
+GO
+
+-- ==============================================================
+-- ADD 5 UNIQUE USERS
+-- ==============================================================
+DECLARE @NewCust1 INT, @NewCust2 INT, @NewCust3 INT, @NewCust4 INT, @NewCust5 INT;
+
+-- User 1
+EXEC sp_RegisterCustomer 
+    @CustomerName = 'John', @LastName = 'Doe', 
+    @Email = 'john.doe@example.com', @PlainPassword = 'Pass123!', 
+    @PhoneNo = '+1-555-0101', @DateOfBirth = '1990-01-01', 
+    @CustomerID = @NewCust1 OUTPUT;
+
+-- User 2
+EXEC sp_RegisterCustomer 
+    @CustomerName = 'Jane', @LastName = 'Smith', 
+    @Email = 'jane.smith@example.com', @PlainPassword = 'Pass123!', 
+    @PhoneNo = '+1-555-0102', @DateOfBirth = '1992-02-02', 
+    @CustomerID = @NewCust2 OUTPUT;
+
+-- User 3
+EXEC sp_RegisterCustomer 
+    @CustomerName = 'Alice', @LastName = 'Johnson', 
+    @Email = 'alice.j@example.com', @PlainPassword = 'Pass123!', 
+    @PhoneNo = '+1-555-0103', @DateOfBirth = '1988-03-03', 
+    @CustomerID = @NewCust3 OUTPUT;
+
+-- User 4
+EXEC sp_RegisterCustomer 
+    @CustomerName = 'Bob', @LastName = 'Brown', 
+    @Email = 'bob.b@example.com', @PlainPassword = 'Pass123!', 
+    @PhoneNo = '+1-555-0104', @DateOfBirth = '1985-04-04', 
+    @CustomerID = @NewCust4 OUTPUT;
+
+-- User 5
+EXEC sp_RegisterCustomer 
+    @CustomerName = 'Charlie', @LastName = 'Davis', 
+    @Email = 'charlie.d@example.com', @PlainPassword = 'Pass123!', 
+    @PhoneNo = '+1-555-0105', @DateOfBirth = '1995-05-05', 
+    @CustomerID = @NewCust5 OUTPUT;
+
+-- Login
+-- 1. john.doe@example.com / Pass123!
+-- 2. jane.smith@example.com / Pass123!
+-- 3. alice.j@example.com / Pass123!
+-- 4. bob.b@example.com / Pass123!
+-- 5. charlie.d@example.com / Pass123!
+
+-- ==============================================================
+-- CREATE ADDRESSES FOR NEW USERS
+-- ==============================================================
+INSERT INTO Address (CustomerID, Street, City, PostalCode, Country, IsDefault) VALUES
+(@NewCust1, '123 Main St', 'New York', '10001', 'USA', 1),
+(@NewCust2, '456 Oak Ave', 'Los Angeles', '90001', 'USA', 1),
+(@NewCust3, '789 Pine Ln', 'Chicago', '60601', 'USA', 1),
+(@NewCust4, '321 Elm Dr', 'Houston', '77001', 'USA', 1),
+(@NewCust5, '654 Maple Ct', 'Phoenix', '85001', 'USA', 1);
+
+-- ==============================================================
+-- CREATE 5 ORDERS (Statuses: Delivered, Processing, Pending, Refunded, Exchanged)
+-- ==============================================================
+DECLARE @Ord1 INT, @Ord2 INT, @Ord3 INT, @Ord4 INT, @Ord5 INT;
+DECLARE @Addr1 INT, @Addr2 INT, @Addr3 INT, @Addr4 INT, @Addr5 INT;
+
+-- Get Address IDs
+SELECT @Addr1 = AddressID FROM Address WHERE CustomerID = @NewCust1;
+SELECT @Addr2 = AddressID FROM Address WHERE CustomerID = @NewCust2;
+SELECT @Addr3 = AddressID FROM Address WHERE CustomerID = @NewCust3;
+SELECT @Addr4 = AddressID FROM Address WHERE CustomerID = @NewCust4;
+SELECT @Addr5 = AddressID FROM Address WHERE CustomerID = @NewCust5;
+
+-- 1. Order for John: Delivered
+EXEC sp_AddOrUpdateCartItem @NewCust1, 1, 1;
+EXEC sp_PlaceOrder @NewCust1, @Addr1, 'Standard', @Ord1 OUTPUT;
+UPDATE Orders SET OrderStatus = 'Delivered' WHERE OrderID = @Ord1;
+
+EXEC sp_AddOrUpdateCartItem @NewCust1, 1, 1;
+EXEC sp_PlaceOrder @NewCust1, @Addr1, 'Standard', @Ord1 OUTPUT;
+UPDATE Orders SET OrderStatus = 'Pending' WHERE OrderID = @Ord1;
+
+EXEC sp_AddOrUpdateCartItem @NewCust1, 1, 1;
+EXEC sp_PlaceOrder @NewCust1, @Addr1, 'Standard', @Ord1 OUTPUT;
+UPDATE Orders SET OrderStatus = 'Processing' WHERE OrderID = @Ord1;
+
+-- 2. Order for Jane: Processing
+EXEC sp_AddOrUpdateCartItem @NewCust2, 2, 2;
+EXEC sp_PlaceOrder @NewCust2, @Addr2, 'Standard', @Ord2 OUTPUT;
+UPDATE Orders SET OrderStatus = 'Processing' WHERE OrderID = @Ord2;
+
+EXEC sp_AddOrUpdateCartItem @NewCust2, 2, 2;
+EXEC sp_PlaceOrder @NewCust2, @Addr2, 'Express', @Ord2 OUTPUT;
+UPDATE Orders SET OrderStatus = 'Delivered' WHERE OrderID = @Ord2;
+
+EXEC sp_AddOrUpdateCartItem @NewCust2, 2, 2;
+EXEC sp_PlaceOrder @NewCust2, @Addr2, 'Standard', @Ord2 OUTPUT;
+UPDATE Orders SET OrderStatus = 'Refunded' WHERE OrderID = @Ord2;
+
+EXEC sp_AddOrUpdateCartItem @NewCust2, 2, 2;
+EXEC sp_PlaceOrder @NewCust2, @Addr2, 'Standard', @Ord2 OUTPUT;
+UPDATE Orders SET OrderStatus = 'Exchanged' WHERE OrderID = @Ord2;
+
+-- 3. Order for Alice: Pending
+EXEC sp_AddOrUpdateCartItem @NewCust3, 3, 1;
+EXEC sp_PlaceOrder @NewCust3, @Addr3, 'Standard', @Ord3 OUTPUT;
+UPDATE Orders SET OrderStatus = 'Pending' WHERE OrderID = @Ord3;
+
+EXEC sp_AddOrUpdateCartItem @NewCust3, 3, 1;
+EXEC sp_PlaceOrder @NewCust3, @Addr3, 'Standard', @Ord3 OUTPUT;
+UPDATE Orders SET OrderStatus = 'Processing' WHERE OrderID = @Ord3;
+
+EXEC sp_AddOrUpdateCartItem @NewCust3, 3, 1;
+EXEC sp_PlaceOrder @NewCust3, @Addr3, 'Standard', @Ord3 OUTPUT;
+UPDATE Orders SET OrderStatus = 'Delivered' WHERE OrderID = @Ord3;
+
+EXEC sp_AddOrUpdateCartItem @NewCust3, 3, 1;
+EXEC sp_PlaceOrder @NewCust3, @Addr3, 'Standard', @Ord3 OUTPUT;
+UPDATE Orders SET OrderStatus = 'Refunded' WHERE OrderID = @Ord3;
+
+EXEC sp_AddOrUpdateCartItem @NewCust3, 3, 1;
+EXEC sp_PlaceOrder @NewCust3, @Addr3, 'Standard', @Ord3 OUTPUT;
+UPDATE Orders SET OrderStatus = 'Exchanged' WHERE OrderID = @Ord3;  
+
+-- 4. Order for Bob: Refunded (Was Delivered)
+EXEC sp_AddOrUpdateCartItem @NewCust4, 4, 1;
+EXEC sp_PlaceOrder @NewCust4, @Addr4, 'Express', @Ord4 OUTPUT;
+UPDATE Orders SET OrderStatus = 'Delivered' WHERE OrderID = @Ord4; 
+-- Mark as Refunded
+EXEC sp_ProcessOrderReturn @Ord4, 'Refunded';
+
+EXEC sp_AddOrUpdateCartItem @NewCust4, 4, 1;
+EXEC sp_PlaceOrder @NewCust4, @Addr4, 'Standard', @Ord4 OUTPUT;
+UPDATE Orders SET OrderStatus = 'Refunded' WHERE OrderID = @Ord4;
+
+EXEC sp_AddOrUpdateCartItem @NewCust4, 4, 1;
+EXEC sp_PlaceOrder @NewCust4, @Addr4, 'Standard', @Ord4 OUTPUT;
+UPDATE Orders SET OrderStatus = 'Exchanged' WHERE OrderID = @Ord4;
+
+-- 5. Order for Charlie: Exchanged (Was Delivered)
+EXEC sp_AddOrUpdateCartItem @NewCust5, 5, 1;
+EXEC sp_PlaceOrder @NewCust5, @Addr5, 'Standard', @Ord5 OUTPUT;
+UPDATE Orders SET OrderStatus = 'Delivered' WHERE OrderID = @Ord5;
+-- Mark as Exchanged
+EXEC sp_ProcessOrderReturn @Ord5, 'Exchanged';
+
+EXEC sp_AddOrUpdateCartItem @NewCust5, 5, 1;
+EXEC sp_PlaceOrder @NewCust5, @Addr5, 'Standard', @Ord5 OUTPUT;
+UPDATE Orders SET OrderStatus = 'Exchanged' WHERE OrderID = @Ord5;
+
 GO

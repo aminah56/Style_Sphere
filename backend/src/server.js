@@ -4,6 +4,10 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
+console.log('Stripe Key loaded:', process.env.STRIPE_SECRET_KEY ? 'Yes' : 'No');
+if (!process.env.STRIPE_SECRET_KEY) {
+    console.error('CRITICAL: STRIPE_SECRET_KEY is missing from environment variables.');
+}
 
 const { getPool } = require('./db');
 const authRoutes = require('./routes/auth');
@@ -45,6 +49,7 @@ app.use('/api/user', userRoutes); // Add this usage
 
 app.use('/api/catalog', catalogRoutes);
 app.use('/api/cart', cartRoutes);
+app.use('/api/payment', require('./routes/payment'));
 app.use('/api/wishlist', wishlistRoutes);
 app.use('/api/orders', ordersRoutes);
 

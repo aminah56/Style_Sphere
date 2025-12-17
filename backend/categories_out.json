@@ -1,0 +1,792 @@
+[
+  {
+    "CategoryID": 1,
+    "CategoryName": "Men's Collection",
+    "ParentCategoryID": null,
+    "Description": "Complete range of men's eastern wear",
+    "children": [
+      {
+        "CategoryID": 3,
+        "CategoryName": "Men's Stitched",
+        "ParentCategoryID": 1,
+        "Description": "Ready to wear sets for men",
+        "children": [
+          {
+            "CategoryID": 7,
+            "CategoryName": "Men's Casual",
+            "ParentCategoryID": 3,
+            "Description": "Everyday wear",
+            "children": []
+          },
+          {
+            "CategoryID": 8,
+            "CategoryName": "Men's Formal",
+            "ParentCategoryID": 3,
+            "Description": "Occasions & events",
+            "children": []
+          },
+          {
+            "CategoryID": 9,
+            "CategoryName": "Men's Luxury Pret",
+            "ParentCategoryID": 3,
+            "Description": "Premium designer looks",
+            "children": []
+          },
+          {
+            "CategoryID": 23,
+            "CategoryName": "Men's Casual",
+            "ParentCategoryID": 3,
+            "Description": "Everyday wear",
+            "children": []
+          },
+          {
+            "CategoryID": 24,
+            "CategoryName": "Men's Formal",
+            "ParentCategoryID": 3,
+            "Description": "Occasions & events",
+            "children": []
+          },
+          {
+            "CategoryID": 25,
+            "CategoryName": "Men's Luxury Pret",
+            "ParentCategoryID": 3,
+            "Description": "Premium designer looks",
+            "children": []
+          },
+          {
+            "CategoryID": 39,
+            "CategoryName": "Men's Casual",
+            "ParentCategoryID": 3,
+            "Description": "Everyday wear",
+            "children": []
+          },
+          {
+            "CategoryID": 40,
+            "CategoryName": "Men's Formal",
+            "ParentCategoryID": 3,
+            "Description": "Occasions & events",
+            "children": []
+          },
+          {
+            "CategoryID": 41,
+            "CategoryName": "Men's Luxury Pret",
+            "ParentCategoryID": 3,
+            "Description": "Premium designer looks",
+            "children": []
+          },
+          {
+            "CategoryID": 55,
+            "CategoryName": "Men's Casual",
+            "ParentCategoryID": 3,
+            "Description": "Everyday wear",
+            "children": []
+          },
+          {
+            "CategoryID": 56,
+            "CategoryName": "Men's Formal",
+            "ParentCategoryID": 3,
+            "Description": "Occasions & events",
+            "children": []
+          },
+          {
+            "CategoryID": 57,
+            "CategoryName": "Men's Luxury Pret",
+            "ParentCategoryID": 3,
+            "Description": "Premium designer looks",
+            "children": []
+          },
+          {
+            "CategoryID": 71,
+            "CategoryName": "Men's Casual",
+            "ParentCategoryID": 3,
+            "Description": "Everyday wear",
+            "children": []
+          },
+          {
+            "CategoryID": 72,
+            "CategoryName": "Men's Formal",
+            "ParentCategoryID": 3,
+            "Description": "Occasions & events",
+            "children": []
+          },
+          {
+            "CategoryID": 73,
+            "CategoryName": "Men's Luxury Pret",
+            "ParentCategoryID": 3,
+            "Description": "Premium designer looks",
+            "children": []
+          },
+          {
+            "CategoryID": 87,
+            "CategoryName": "Men's Casual",
+            "ParentCategoryID": 3,
+            "Description": "Everyday wear",
+            "children": []
+          },
+          {
+            "CategoryID": 88,
+            "CategoryName": "Men's Formal",
+            "ParentCategoryID": 3,
+            "Description": "Occasions & events",
+            "children": []
+          },
+          {
+            "CategoryID": 89,
+            "CategoryName": "Men's Luxury Pret",
+            "ParentCategoryID": 3,
+            "Description": "Premium designer looks",
+            "children": []
+          },
+          {
+            "CategoryID": 103,
+            "CategoryName": "Men's Casual",
+            "ParentCategoryID": 3,
+            "Description": "Everyday wear",
+            "children": []
+          },
+          {
+            "CategoryID": 104,
+            "CategoryName": "Men's Formal",
+            "ParentCategoryID": 3,
+            "Description": "Occasions & events",
+            "children": []
+          },
+          {
+            "CategoryID": 105,
+            "CategoryName": "Men's Luxury Pret",
+            "ParentCategoryID": 3,
+            "Description": "Premium designer looks",
+            "children": []
+          }
+        ]
+      },
+      {
+        "CategoryID": 4,
+        "CategoryName": "Men's Unstitched",
+        "ParentCategoryID": 1,
+        "Description": "Fabric only for men",
+        "children": [
+          {
+            "CategoryID": 10,
+            "CategoryName": "Men's Casual Unstitched",
+            "ParentCategoryID": 4,
+            "Description": "Casual fabrics",
+            "children": []
+          },
+          {
+            "CategoryID": 11,
+            "CategoryName": "Men's Formal Unstitched",
+            "ParentCategoryID": 4,
+            "Description": "Formal fabrics",
+            "children": []
+          },
+          {
+            "CategoryID": 26,
+            "CategoryName": "Men's Casual Unstitched",
+            "ParentCategoryID": 4,
+            "Description": "Casual fabrics",
+            "children": []
+          },
+          {
+            "CategoryID": 27,
+            "CategoryName": "Men's Formal Unstitched",
+            "ParentCategoryID": 4,
+            "Description": "Formal fabrics",
+            "children": []
+          },
+          {
+            "CategoryID": 42,
+            "CategoryName": "Men's Casual Unstitched",
+            "ParentCategoryID": 4,
+            "Description": "Casual fabrics",
+            "children": []
+          },
+          {
+            "CategoryID": 43,
+            "CategoryName": "Men's Formal Unstitched",
+            "ParentCategoryID": 4,
+            "Description": "Formal fabrics",
+            "children": []
+          },
+          {
+            "CategoryID": 58,
+            "CategoryName": "Men's Casual Unstitched",
+            "ParentCategoryID": 4,
+            "Description": "Casual fabrics",
+            "children": []
+          },
+          {
+            "CategoryID": 59,
+            "CategoryName": "Men's Formal Unstitched",
+            "ParentCategoryID": 4,
+            "Description": "Formal fabrics",
+            "children": []
+          },
+          {
+            "CategoryID": 74,
+            "CategoryName": "Men's Casual Unstitched",
+            "ParentCategoryID": 4,
+            "Description": "Casual fabrics",
+            "children": []
+          },
+          {
+            "CategoryID": 75,
+            "CategoryName": "Men's Formal Unstitched",
+            "ParentCategoryID": 4,
+            "Description": "Formal fabrics",
+            "children": []
+          },
+          {
+            "CategoryID": 90,
+            "CategoryName": "Men's Casual Unstitched",
+            "ParentCategoryID": 4,
+            "Description": "Casual fabrics",
+            "children": []
+          },
+          {
+            "CategoryID": 91,
+            "CategoryName": "Men's Formal Unstitched",
+            "ParentCategoryID": 4,
+            "Description": "Formal fabrics",
+            "children": []
+          },
+          {
+            "CategoryID": 106,
+            "CategoryName": "Men's Casual Unstitched",
+            "ParentCategoryID": 4,
+            "Description": "Casual fabrics",
+            "children": []
+          },
+          {
+            "CategoryID": 107,
+            "CategoryName": "Men's Formal Unstitched",
+            "ParentCategoryID": 4,
+            "Description": "Formal fabrics",
+            "children": []
+          }
+        ]
+      },
+      {
+        "CategoryID": 19,
+        "CategoryName": "Men's Stitched",
+        "ParentCategoryID": 1,
+        "Description": "Ready to wear sets for men",
+        "children": []
+      },
+      {
+        "CategoryID": 20,
+        "CategoryName": "Men's Unstitched",
+        "ParentCategoryID": 1,
+        "Description": "Fabric only for men",
+        "children": []
+      },
+      {
+        "CategoryID": 35,
+        "CategoryName": "Men's Stitched",
+        "ParentCategoryID": 1,
+        "Description": "Ready to wear sets for men",
+        "children": []
+      },
+      {
+        "CategoryID": 36,
+        "CategoryName": "Men's Unstitched",
+        "ParentCategoryID": 1,
+        "Description": "Fabric only for men",
+        "children": []
+      },
+      {
+        "CategoryID": 51,
+        "CategoryName": "Men's Stitched",
+        "ParentCategoryID": 1,
+        "Description": "Ready to wear sets for men",
+        "children": []
+      },
+      {
+        "CategoryID": 52,
+        "CategoryName": "Men's Unstitched",
+        "ParentCategoryID": 1,
+        "Description": "Fabric only for men",
+        "children": []
+      },
+      {
+        "CategoryID": 67,
+        "CategoryName": "Men's Stitched",
+        "ParentCategoryID": 1,
+        "Description": "Ready to wear sets for men",
+        "children": []
+      },
+      {
+        "CategoryID": 68,
+        "CategoryName": "Men's Unstitched",
+        "ParentCategoryID": 1,
+        "Description": "Fabric only for men",
+        "children": []
+      },
+      {
+        "CategoryID": 83,
+        "CategoryName": "Men's Stitched",
+        "ParentCategoryID": 1,
+        "Description": "Ready to wear sets for men",
+        "children": []
+      },
+      {
+        "CategoryID": 84,
+        "CategoryName": "Men's Unstitched",
+        "ParentCategoryID": 1,
+        "Description": "Fabric only for men",
+        "children": []
+      },
+      {
+        "CategoryID": 99,
+        "CategoryName": "Men's Stitched",
+        "ParentCategoryID": 1,
+        "Description": "Ready to wear sets for men",
+        "children": []
+      },
+      {
+        "CategoryID": 100,
+        "CategoryName": "Men's Unstitched",
+        "ParentCategoryID": 1,
+        "Description": "Fabric only for men",
+        "children": []
+      }
+    ]
+  },
+  {
+    "CategoryID": 2,
+    "CategoryName": "Women's Collection",
+    "ParentCategoryID": null,
+    "Description": "Complete range of women's eastern wear",
+    "children": [
+      {
+        "CategoryID": 5,
+        "CategoryName": "Women's Stitched",
+        "ParentCategoryID": 2,
+        "Description": "Ready to wear sets for women",
+        "children": [
+          {
+            "CategoryID": 12,
+            "CategoryName": "Women's Casual",
+            "ParentCategoryID": 5,
+            "Description": "Daily wear",
+            "children": []
+          },
+          {
+            "CategoryID": 13,
+            "CategoryName": "Women's Formal",
+            "ParentCategoryID": 5,
+            "Description": "Occasions & events",
+            "children": []
+          },
+          {
+            "CategoryID": 14,
+            "CategoryName": "Women's Luxury Pret",
+            "ParentCategoryID": 5,
+            "Description": "Premium designer",
+            "children": []
+          },
+          {
+            "CategoryID": 28,
+            "CategoryName": "Women's Casual",
+            "ParentCategoryID": 5,
+            "Description": "Daily wear",
+            "children": []
+          },
+          {
+            "CategoryID": 29,
+            "CategoryName": "Women's Formal",
+            "ParentCategoryID": 5,
+            "Description": "Occasions & events",
+            "children": []
+          },
+          {
+            "CategoryID": 30,
+            "CategoryName": "Women's Luxury Pret",
+            "ParentCategoryID": 5,
+            "Description": "Premium designer",
+            "children": []
+          },
+          {
+            "CategoryID": 44,
+            "CategoryName": "Women's Casual",
+            "ParentCategoryID": 5,
+            "Description": "Daily wear",
+            "children": []
+          },
+          {
+            "CategoryID": 45,
+            "CategoryName": "Women's Formal",
+            "ParentCategoryID": 5,
+            "Description": "Occasions & events",
+            "children": []
+          },
+          {
+            "CategoryID": 46,
+            "CategoryName": "Women's Luxury Pret",
+            "ParentCategoryID": 5,
+            "Description": "Premium designer",
+            "children": []
+          },
+          {
+            "CategoryID": 60,
+            "CategoryName": "Women's Casual",
+            "ParentCategoryID": 5,
+            "Description": "Daily wear",
+            "children": []
+          },
+          {
+            "CategoryID": 61,
+            "CategoryName": "Women's Formal",
+            "ParentCategoryID": 5,
+            "Description": "Occasions & events",
+            "children": []
+          },
+          {
+            "CategoryID": 62,
+            "CategoryName": "Women's Luxury Pret",
+            "ParentCategoryID": 5,
+            "Description": "Premium designer",
+            "children": []
+          },
+          {
+            "CategoryID": 76,
+            "CategoryName": "Women's Casual",
+            "ParentCategoryID": 5,
+            "Description": "Daily wear",
+            "children": []
+          },
+          {
+            "CategoryID": 77,
+            "CategoryName": "Women's Formal",
+            "ParentCategoryID": 5,
+            "Description": "Occasions & events",
+            "children": []
+          },
+          {
+            "CategoryID": 78,
+            "CategoryName": "Women's Luxury Pret",
+            "ParentCategoryID": 5,
+            "Description": "Premium designer",
+            "children": []
+          },
+          {
+            "CategoryID": 92,
+            "CategoryName": "Women's Casual",
+            "ParentCategoryID": 5,
+            "Description": "Daily wear",
+            "children": []
+          },
+          {
+            "CategoryID": 93,
+            "CategoryName": "Women's Formal",
+            "ParentCategoryID": 5,
+            "Description": "Occasions & events",
+            "children": []
+          },
+          {
+            "CategoryID": 94,
+            "CategoryName": "Women's Luxury Pret",
+            "ParentCategoryID": 5,
+            "Description": "Premium designer",
+            "children": []
+          },
+          {
+            "CategoryID": 108,
+            "CategoryName": "Women's Casual",
+            "ParentCategoryID": 5,
+            "Description": "Daily wear",
+            "children": []
+          },
+          {
+            "CategoryID": 109,
+            "CategoryName": "Women's Formal",
+            "ParentCategoryID": 5,
+            "Description": "Occasions & events",
+            "children": []
+          },
+          {
+            "CategoryID": 110,
+            "CategoryName": "Women's Luxury Pret",
+            "ParentCategoryID": 5,
+            "Description": "Premium designer",
+            "children": []
+          }
+        ]
+      },
+      {
+        "CategoryID": 6,
+        "CategoryName": "Women's Unstitched",
+        "ParentCategoryID": 2,
+        "Description": "Fabric only for women",
+        "children": [
+          {
+            "CategoryID": 15,
+            "CategoryName": "Women's Casual Unstitched",
+            "ParentCategoryID": 6,
+            "Description": "Casual fabrics",
+            "children": []
+          },
+          {
+            "CategoryID": 16,
+            "CategoryName": "Women's Formal Unstitched",
+            "ParentCategoryID": 6,
+            "Description": "Formal fabrics",
+            "children": []
+          },
+          {
+            "CategoryID": 31,
+            "CategoryName": "Women's Casual Unstitched",
+            "ParentCategoryID": 6,
+            "Description": "Casual fabrics",
+            "children": []
+          },
+          {
+            "CategoryID": 32,
+            "CategoryName": "Women's Formal Unstitched",
+            "ParentCategoryID": 6,
+            "Description": "Formal fabrics",
+            "children": []
+          },
+          {
+            "CategoryID": 47,
+            "CategoryName": "Women's Casual Unstitched",
+            "ParentCategoryID": 6,
+            "Description": "Casual fabrics",
+            "children": []
+          },
+          {
+            "CategoryID": 48,
+            "CategoryName": "Women's Formal Unstitched",
+            "ParentCategoryID": 6,
+            "Description": "Formal fabrics",
+            "children": []
+          },
+          {
+            "CategoryID": 63,
+            "CategoryName": "Women's Casual Unstitched",
+            "ParentCategoryID": 6,
+            "Description": "Casual fabrics",
+            "children": []
+          },
+          {
+            "CategoryID": 64,
+            "CategoryName": "Women's Formal Unstitched",
+            "ParentCategoryID": 6,
+            "Description": "Formal fabrics",
+            "children": []
+          },
+          {
+            "CategoryID": 79,
+            "CategoryName": "Women's Casual Unstitched",
+            "ParentCategoryID": 6,
+            "Description": "Casual fabrics",
+            "children": []
+          },
+          {
+            "CategoryID": 80,
+            "CategoryName": "Women's Formal Unstitched",
+            "ParentCategoryID": 6,
+            "Description": "Formal fabrics",
+            "children": []
+          },
+          {
+            "CategoryID": 95,
+            "CategoryName": "Women's Casual Unstitched",
+            "ParentCategoryID": 6,
+            "Description": "Casual fabrics",
+            "children": []
+          },
+          {
+            "CategoryID": 96,
+            "CategoryName": "Women's Formal Unstitched",
+            "ParentCategoryID": 6,
+            "Description": "Formal fabrics",
+            "children": []
+          },
+          {
+            "CategoryID": 111,
+            "CategoryName": "Women's Casual Unstitched",
+            "ParentCategoryID": 6,
+            "Description": "Casual fabrics",
+            "children": []
+          },
+          {
+            "CategoryID": 112,
+            "CategoryName": "Women's Formal Unstitched",
+            "ParentCategoryID": 6,
+            "Description": "Formal fabrics",
+            "children": []
+          }
+        ]
+      },
+      {
+        "CategoryID": 21,
+        "CategoryName": "Women's Stitched",
+        "ParentCategoryID": 2,
+        "Description": "Ready to wear sets for women",
+        "children": []
+      },
+      {
+        "CategoryID": 22,
+        "CategoryName": "Women's Unstitched",
+        "ParentCategoryID": 2,
+        "Description": "Fabric only for women",
+        "children": []
+      },
+      {
+        "CategoryID": 37,
+        "CategoryName": "Women's Stitched",
+        "ParentCategoryID": 2,
+        "Description": "Ready to wear sets for women",
+        "children": []
+      },
+      {
+        "CategoryID": 38,
+        "CategoryName": "Women's Unstitched",
+        "ParentCategoryID": 2,
+        "Description": "Fabric only for women",
+        "children": []
+      },
+      {
+        "CategoryID": 53,
+        "CategoryName": "Women's Stitched",
+        "ParentCategoryID": 2,
+        "Description": "Ready to wear sets for women",
+        "children": []
+      },
+      {
+        "CategoryID": 54,
+        "CategoryName": "Women's Unstitched",
+        "ParentCategoryID": 2,
+        "Description": "Fabric only for women",
+        "children": []
+      },
+      {
+        "CategoryID": 69,
+        "CategoryName": "Women's Stitched",
+        "ParentCategoryID": 2,
+        "Description": "Ready to wear sets for women",
+        "children": []
+      },
+      {
+        "CategoryID": 70,
+        "CategoryName": "Women's Unstitched",
+        "ParentCategoryID": 2,
+        "Description": "Fabric only for women",
+        "children": []
+      },
+      {
+        "CategoryID": 85,
+        "CategoryName": "Women's Stitched",
+        "ParentCategoryID": 2,
+        "Description": "Ready to wear sets for women",
+        "children": []
+      },
+      {
+        "CategoryID": 86,
+        "CategoryName": "Women's Unstitched",
+        "ParentCategoryID": 2,
+        "Description": "Fabric only for women",
+        "children": []
+      },
+      {
+        "CategoryID": 101,
+        "CategoryName": "Women's Stitched",
+        "ParentCategoryID": 2,
+        "Description": "Ready to wear sets for women",
+        "children": []
+      },
+      {
+        "CategoryID": 102,
+        "CategoryName": "Women's Unstitched",
+        "ParentCategoryID": 2,
+        "Description": "Fabric only for women",
+        "children": []
+      }
+    ]
+  },
+  {
+    "CategoryID": 17,
+    "CategoryName": "Men's Collection",
+    "ParentCategoryID": null,
+    "Description": "Complete range of men's eastern wear",
+    "children": []
+  },
+  {
+    "CategoryID": 18,
+    "CategoryName": "Women's Collection",
+    "ParentCategoryID": null,
+    "Description": "Complete range of women's eastern wear",
+    "children": []
+  },
+  {
+    "CategoryID": 33,
+    "CategoryName": "Men's Collection",
+    "ParentCategoryID": null,
+    "Description": "Complete range of men's eastern wear",
+    "children": []
+  },
+  {
+    "CategoryID": 34,
+    "CategoryName": "Women's Collection",
+    "ParentCategoryID": null,
+    "Description": "Complete range of women's eastern wear",
+    "children": []
+  },
+  {
+    "CategoryID": 49,
+    "CategoryName": "Men's Collection",
+    "ParentCategoryID": null,
+    "Description": "Complete range of men's eastern wear",
+    "children": []
+  },
+  {
+    "CategoryID": 50,
+    "CategoryName": "Women's Collection",
+    "ParentCategoryID": null,
+    "Description": "Complete range of women's eastern wear",
+    "children": []
+  },
+  {
+    "CategoryID": 65,
+    "CategoryName": "Men's Collection",
+    "ParentCategoryID": null,
+    "Description": "Complete range of men's eastern wear",
+    "children": []
+  },
+  {
+    "CategoryID": 66,
+    "CategoryName": "Women's Collection",
+    "ParentCategoryID": null,
+    "Description": "Complete range of women's eastern wear",
+    "children": []
+  },
+  {
+    "CategoryID": 81,
+    "CategoryName": "Men's Collection",
+    "ParentCategoryID": null,
+    "Description": "Complete range of men's eastern wear",
+    "children": []
+  },
+  {
+    "CategoryID": 82,
+    "CategoryName": "Women's Collection",
+    "ParentCategoryID": null,
+    "Description": "Complete range of women's eastern wear",
+    "children": []
+  },
+  {
+    "CategoryID": 97,
+    "CategoryName": "Men's Collection",
+    "ParentCategoryID": null,
+    "Description": "Complete range of men's eastern wear",
+    "children": []
+  },
+  {
+    "CategoryID": 98,
+    "CategoryName": "Women's Collection",
+    "ParentCategoryID": null,
+    "Description": "Complete range of women's eastern wear",
+    "children": []
+  }
+]

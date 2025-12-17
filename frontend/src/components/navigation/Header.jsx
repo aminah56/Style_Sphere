@@ -51,9 +51,23 @@ const Header = () => {
   useEffect(() => {
     catalogApi.getCategories()
       .then(({ data }) => {
-        // Filter out categories that shouldn't be in the main nav if needed
-        // For now, we display all top-level categories
-        setCategories(data);
+        // Helper function to recursively deduplicate categories by name
+        const deduplicateCategories = (cats) => {
+          if (!cats) return [];
+          const seen = new Set();
+          return cats.filter(cat => {
+            if (seen.has(cat.CategoryName)) return false;
+            seen.add(cat.CategoryName);
+            // Recursively deduplicate children
+            if (cat.children && cat.children.length > 0) {
+              cat.children = deduplicateCategories(cat.children);
+            }
+            return true;
+          });
+        };
+
+        const uniqueCategories = deduplicateCategories(data);
+        setCategories(uniqueCategories);
       })
       .catch((err) => console.error('Failed to load categories', err));
   }, []);
