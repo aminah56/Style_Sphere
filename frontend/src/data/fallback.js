@@ -6,7 +6,7 @@ export const heroSlides = [
     copy: 'Handworked resham, organza appliqués and dramatic volumes inspired by contemporary global trends.',
     cta: 'Explore Women’s Luxury Pret',
     link: '/collections/women-luxury',
-    image: 'https://images.unsplash.com/photo-1518540809872-d5ac475c8708?auto=format&fit=crop&w=1600&q=80',
+    image: 'https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=1600&q=80',
     accent: '#f2c94c'
   },
   {
@@ -16,7 +16,7 @@ export const heroSlides = [
     copy: 'Structured prince coats and hand embellished waistcoats in jewel tones.',
     cta: 'Shop Men’s Stitched',
     link: '/collections/mens-stitched',
-    image: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1600&q=80',
+    image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=1600&q=80',
     accent: '#b1a4ff'
   },
   {
@@ -26,7 +26,7 @@ export const heroSlides = [
     copy: 'Lawn, cotton net and jamawar bases ready for your atelier.',
     cta: 'Browse Fabric Stories',
     link: '/collections/unstitched',
-    image: 'https://images.unsplash.com/photo-1600093463592-8e36ae95ef56?auto=format&fit=crop&w=1600&q=80',
+    image: 'https://images.unsplash.com/photo-1579546929662-711aa81148cf?auto=format&fit=crop&w=1600&q=80',
     accent: '#ffd3e8'
   }
 ];

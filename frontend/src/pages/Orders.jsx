@@ -97,7 +97,7 @@ const Orders = () => {
                                 </div>
 
                                 {/* Actions */}
-                                {isEligibleForReturn(order.OrderDate) && (
+                                {isEligibleForReturn(order.OrderDate) && order.OrderStatus === 'Delivered' && (
                                     <div className="mt-8 pt-4 border-t border-gray-50 flex justify-end gap-3">
                                         <button
                                             onClick={() => handleRequest(order, 'refund')}

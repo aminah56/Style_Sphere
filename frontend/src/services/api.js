@@ -39,3 +39,8 @@ export const ordersApi = {
   submitReturnRequest: (orderId, payload) => apiClient.post(`/orders/${orderId}/return`, payload)
 };
 
+export const userApi = {
+  getProfile: (customerId) => apiClient.get(`/user/${customerId}/profile`),
+  saveAddress: (payload) => apiClient.post('/user/address', payload)
+};
+

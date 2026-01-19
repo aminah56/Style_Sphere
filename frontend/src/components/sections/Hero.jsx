@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { heroSlides } from '../../data/fallback';
 
 const Hero = () => (
@@ -13,12 +14,12 @@ const Hero = () => (
         and cart sync.
       </p>
       <div className="mt-6 flex flex-wrap gap-3">
-        <button className="px-6 py-3 rounded-full bg-purple-700 text-white text-xs tracking-[0.4em] uppercase shadow-md">
+        <Link to="/collections/womens-collection" className="px-6 py-3 rounded-full bg-purple-700 text-white text-xs tracking-[0.4em] uppercase shadow-md hover:bg-purple-800 transition-colors">
           Shop Women
-        </button>
-        <button className="px-6 py-3 rounded-full border border-purple-300 text-purple-700 text-xs tracking-[0.4em] uppercase">
+        </Link>
+        <Link to="/collections/mens-collection" className="px-6 py-3 rounded-full border border-purple-300 text-purple-700 text-xs tracking-[0.4em] uppercase hover:bg-purple-50 transition-colors">
           Shop Men
-        </button>
+        </Link>
       </div>
       <div className="mt-8 flex gap-8 text-xs uppercase tracking-[0.3em] text-gray-500">
         <div>
@@ -51,7 +52,9 @@ const Hero = () => (
             </p>
             <h3 className="text-xl font-semibold">{slide.title}</h3>
             <p className="text-sm text-white/80">{slide.copy}</p>
-            <button className="mt-3 text-xs tracking-[0.4em] uppercase">{slide.cta}</button>
+            <Link to={slide.link} className="mt-3 text-xs tracking-[0.4em] uppercase hover:text-purple-200 transition-colors inline-block">
+              {slide.cta}
+            </Link>
           </div>
         </motion.div>
       ))}

@@ -37,7 +37,8 @@ CREATE TABLE Customer (
     DateOfBirth DATE NULL,
     ProfilePicture NVARCHAR(500) NULL,
     CreatedAt DATETIME2 DEFAULT SYSUTCDATETIME(),
-    CONSTRAINT CHK_Customer_Email CHECK (Email LIKE '%_@__%.__%')
+    CONSTRAINT CHK_Customer_Email CHECK (Email LIKE '%_@__%.__%'),
+    CONSTRAINT CHK_Customer_Phone CHECK (LEN(PhoneNo) = 11 AND PhoneNo NOT LIKE '%[^0-9]%')
 );
 GO
 
@@ -327,6 +328,11 @@ BEGIN
         IF EXISTS (SELECT 1 FROM Customer WHERE Email = @Email)
         BEGIN
             THROW 51002, 'Email already registered.', 1;
+        END;
+        
+        IF LEN(@PlainPassword) < 10
+        BEGIN
+            THROW 51003, 'Password must be at least 10 characters long.', 1;
         END;
         
         DECLARE @Salt UNIQUEIDENTIFIER = NEWID();
@@ -884,8 +890,8 @@ EXEC sp_RegisterCustomer
     @CustomerName = 'Ahmed',
     @LastName = 'Khan',
     @Email = 'ahmed.khan@email.com',
-    @PlainPassword = 'Ahmed123!',
-    @PhoneNo = '+92-300-1234567',
+    @PlainPassword = 'AhmedKhan123!',
+    @PhoneNo = '03001234567',
     @DateOfBirth = '1995-05-15',
     @CustomerID = @CustomerID_1 OUTPUT;
 
@@ -893,8 +899,8 @@ EXEC sp_RegisterCustomer
     @CustomerName = 'Fatima',
     @LastName = 'Ali',
     @Email = 'fatima.ali@email.com',
-    @PlainPassword = 'Fatima123!',
-    @PhoneNo = '+92-321-7654321',
+    @PlainPassword = 'FatimaAli123!',
+    @PhoneNo = '03217654321',
     @DateOfBirth = '1998-08-22',
     @CustomerID = @CustomerID_2 OUTPUT;
 
@@ -956,45 +962,61 @@ CREATE OR ALTER PROCEDURE sp_ProcessOrderReturn
 AS
 BEGIN
     SET NOCOUNT ON;
-    DECLARE @CurrentStatus NVARCHAR(20);
-    
-    SELECT @CurrentStatus = OrderStatus FROM Orders WHERE OrderID = @OrderID;
-    
-    IF @CurrentStatus IS NULL
-    BEGIN
-        THROW 51008, 'Order not found.', 1;
-    END
+    BEGIN TRY
+        BEGIN TRAN;
 
-    -- "Pending and Processing orders cannot be refunded or exchanged only delivered orders"
-    IF @CurrentStatus IN ('Pending', 'Processing', 'Shipped') 
-    BEGIN
-        THROW 51009, 'Only delivered orders can be refunded or exchanged.', 1;
-    END
+        DECLARE @CurrentStatus NVARCHAR(20);
+        
+        -- 1. Get Current Status with Lock
+        SELECT @CurrentStatus = OrderStatus 
+        FROM Orders WITH (UPDLOCK) 
+        WHERE OrderID = @OrderID;
+        
+        IF @CurrentStatus IS NULL
+            THROW 51008, 'Order not found.', 1;
 
-    -- "Once an order is refunded or exchanged donot give option of refund and exchange again"
-    IF @CurrentStatus IN ('Refunded', 'Exchanged')
-    BEGIN
-        THROW 51010, 'Order has already been processed for return.', 1;
-    END
-    
-    IF @CurrentStatus = 'Delivered'
-    BEGIN
-        IF @RequestType NOT IN ('Refunded', 'Exchanged')
+        -- 2. Validate Eligibility (STRICT)
+        IF @CurrentStatus <> 'Delivered'
         BEGIN
-             THROW 51011, 'Invalid return type. Must be Refunded or Exchanged.', 1;
+             IF @CurrentStatus IN ('Refunded', 'Exchanged')
+                THROW 51010, 'Order has already been processed for return.', 1;
+             ELSE
+                THROW 51009, 'Invalid status. Refund/Exchange is ONLY allowed for orders with status "Delivered".', 1;
         END
 
+        IF @RequestType NOT IN ('Refunded', 'Exchanged')
+            THROW 51011, 'Invalid return type. Must be Refunded or Exchanged.', 1;
+
+        -- 3. Update Order Status
         UPDATE Orders 
         SET OrderStatus = @RequestType 
         WHERE OrderID = @OrderID;
+
+        -- 4. Restock Inventory (For both Refunds and Exchanges, we assume the item is returned to store)
+        UPDATE pv
+        SET AdditionalStock = pv.AdditionalStock + oi.Quantity
+        FROM ProductVariant pv
+        INNER JOIN OrderItem oi ON oi.VariantID = pv.VariantID
+        WHERE oi.OrderID = @OrderID;
+
+        -- 5. Handle Payment Status (Only for Refunds)
+        IF @RequestType = 'Refunded'
+        BEGIN
+            UPDATE Payment
+            SET PaymentStatus = 'Refunded',
+                PaymentAmount = 0 -- Optionally zero out or keep history? Usually we keep history but mark status.
+                                  -- Let's just mark status to 'Refunded' to preserve record of what WAS paid.
+            WHERE OrderID = @OrderID;
+        END
+
+        COMMIT;
         
-        SELECT 'Order marked as ' + @RequestType AS Message;
-    END
-    ELSE
-    BEGIN
-        -- Should catch Cancelled or other weird states if any
-         THROW 51012, 'Order status does not allow return.', 1;
-    END
+        SELECT 'Order processed successfully: ' + @RequestType AS Message;
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0 ROLLBACK;
+        THROW;
+    END CATCH
 END;
 GO
 
@@ -1006,36 +1028,36 @@ DECLARE @NewCust1 INT, @NewCust2 INT, @NewCust3 INT, @NewCust4 INT, @NewCust5 IN
 -- User 1
 EXEC sp_RegisterCustomer 
     @CustomerName = 'John', @LastName = 'Doe', 
-    @Email = 'john.doe@example.com', @PlainPassword = 'Pass123!', 
-    @PhoneNo = '+1-555-0101', @DateOfBirth = '1990-01-01', 
+    @Email = 'john.doe@example.com', @PlainPassword = 'Password123!', 
+    @PhoneNo = '15550101001', @DateOfBirth = '1990-01-01', 
     @CustomerID = @NewCust1 OUTPUT;
 
 -- User 2
 EXEC sp_RegisterCustomer 
     @CustomerName = 'Jane', @LastName = 'Smith', 
-    @Email = 'jane.smith@example.com', @PlainPassword = 'Pass123!', 
-    @PhoneNo = '+1-555-0102', @DateOfBirth = '1992-02-02', 
+    @Email = 'jane.smith@example.com', @PlainPassword = 'Password123!', 
+    @PhoneNo = '15550102002', @DateOfBirth = '1992-02-02', 
     @CustomerID = @NewCust2 OUTPUT;
 
 -- User 3
 EXEC sp_RegisterCustomer 
     @CustomerName = 'Alice', @LastName = 'Johnson', 
-    @Email = 'alice.j@example.com', @PlainPassword = 'Pass123!', 
-    @PhoneNo = '+1-555-0103', @DateOfBirth = '1988-03-03', 
+    @Email = 'alice.j@example.com', @PlainPassword = 'Password123!', 
+    @PhoneNo = '15550103003', @DateOfBirth = '1988-03-03', 
     @CustomerID = @NewCust3 OUTPUT;
 
 -- User 4
 EXEC sp_RegisterCustomer 
     @CustomerName = 'Bob', @LastName = 'Brown', 
-    @Email = 'bob.b@example.com', @PlainPassword = 'Pass123!', 
-    @PhoneNo = '+1-555-0104', @DateOfBirth = '1985-04-04', 
+    @Email = 'bob.b@example.com', @PlainPassword = 'Password123!', 
+    @PhoneNo = '15550104004', @DateOfBirth = '1985-04-04', 
     @CustomerID = @NewCust4 OUTPUT;
 
 -- User 5
 EXEC sp_RegisterCustomer 
     @CustomerName = 'Charlie', @LastName = 'Davis', 
-    @Email = 'charlie.d@example.com', @PlainPassword = 'Pass123!', 
-    @PhoneNo = '+1-555-0105', @DateOfBirth = '1995-05-05', 
+    @Email = 'charlie.d@example.com', @PlainPassword = 'Password123!', 
+    @PhoneNo = '15550105005', @DateOfBirth = '1995-05-05', 
     @CustomerID = @NewCust5 OUTPUT;
 
 -- Login
@@ -1080,6 +1102,7 @@ UPDATE Orders SET OrderStatus = 'Pending' WHERE OrderID = @Ord1;
 EXEC sp_AddOrUpdateCartItem @NewCust1, 1, 1;
 EXEC sp_PlaceOrder @NewCust1, @Addr1, 'Standard', @Ord1 OUTPUT;
 UPDATE Orders SET OrderStatus = 'Processing' WHERE OrderID = @Ord1;
+
 
 -- 2. Order for Jane: Processing
 EXEC sp_AddOrUpdateCartItem @NewCust2, 2, 2;
@@ -1144,5 +1167,303 @@ EXEC sp_ProcessOrderReturn @Ord5, 'Exchanged';
 EXEC sp_AddOrUpdateCartItem @NewCust5, 5, 1;
 EXEC sp_PlaceOrder @NewCust5, @Addr5, 'Standard', @Ord5 OUTPUT;
 UPDATE Orders SET OrderStatus = 'Exchanged' WHERE OrderID = @Ord5;
+
+GO
+
+-- ==============================================================
+-- ADD USER AMINAH AND 7 VARIED ORDERS
+-- ==============================================================
+DECLARE @AminahID INT;
+DECLARE @AminahAddr INT;
+DECLARE @OrdAminah INT;
+
+-- 1. Register Aminah
+EXEC sp_RegisterCustomer 
+    @CustomerName = 'Aminah', @LastName = 'User', 
+    @Email = 'aminah@email.com', @PlainPassword = 'Password123!', 
+    @PhoneNo = '03009876543', @DateOfBirth = '1999-09-09', 
+    @CustomerID = @AminahID OUTPUT;
+
+-- Login: aminah@email.com / Password123!
+
+-- 2. Add Address
+INSERT INTO Address (CustomerID, Street, City, PostalCode, Country, IsDefault) 
+VALUES (@AminahID, 'Block 5, Clifton', 'Karachi', '75600', 'Pakistan', 1);
+
+SELECT @AminahAddr = AddressID FROM Address WHERE CustomerID = @AminahID;
+
+-- 3. Create Orders
+
+-- Order 1: Delivered (Eligible for Return)
+EXEC sp_AddOrUpdateCartItem @AminahID, 1, 1; -- Variant 1
+EXEC sp_AddOrUpdateCartItem @AminahID, 2, 2; -- Variant 2
+EXEC sp_PlaceOrder @AminahID, @AminahAddr, 'Standard', @OrdAminah OUTPUT;
+UPDATE Orders SET OrderStatus = 'Delivered', OrderDate = DATEADD(day, -5, SYSUTCDATETIME()) WHERE OrderID = @OrdAminah;
+INSERT INTO Payment (OrderID, PaymentMethod, PaymentAmount, PaymentStatus, TransactionID, CardLast4Digits)
+SELECT @OrdAminah, 'Credit Card', OrderTotal, 'Completed', CONCAT('TXN-', @OrdAminah), '1234' FROM Orders WHERE OrderID = @OrdAminah;
+
+-- Order 2: Delivered (Eligible for Return)
+EXEC sp_AddOrUpdateCartItem @AminahID, 3, 1;
+EXEC sp_PlaceOrder @AminahID, @AminahAddr, 'Express', @OrdAminah OUTPUT;
+UPDATE Orders SET OrderStatus = 'Delivered', OrderDate = DATEADD(day, -10, SYSUTCDATETIME()) WHERE OrderID = @OrdAminah;
+INSERT INTO Payment (OrderID, PaymentMethod, PaymentAmount, PaymentStatus, TransactionID, CardLast4Digits)
+SELECT @OrdAminah, 'Debit Card', OrderTotal, 'Completed', CONCAT('TXN-', @OrdAminah), '5678' FROM Orders WHERE OrderID = @OrdAminah;
+
+-- Order 3: Delivered (Eligible for Return)
+EXEC sp_AddOrUpdateCartItem @AminahID, 5, 2;
+EXEC sp_PlaceOrder @AminahID, @AminahAddr, 'Standard', @OrdAminah OUTPUT;
+UPDATE Orders SET OrderStatus = 'Delivered', OrderDate = DATEADD(day, -2, SYSUTCDATETIME()) WHERE OrderID = @OrdAminah;
+INSERT INTO Payment (OrderID, PaymentMethod, PaymentAmount, PaymentStatus, TransactionID, CardLast4Digits)
+SELECT @OrdAminah, 'Credit Card', OrderTotal, 'Completed', CONCAT('TXN-', @OrdAminah), '1234' FROM Orders WHERE OrderID = @OrdAminah;
+
+-- Order 4: Processing (Not Eligible)
+EXEC sp_AddOrUpdateCartItem @AminahID, 7, 1;
+EXEC sp_PlaceOrder @AminahID, @AminahAddr, 'Standard', @OrdAminah OUTPUT;
+UPDATE Orders SET OrderStatus = 'Processing' WHERE OrderID = @OrdAminah;
+INSERT INTO Payment (OrderID, PaymentMethod, PaymentAmount, PaymentStatus, TransactionID, CardLast4Digits)
+SELECT @OrdAminah, 'Credit Card', OrderTotal, 'Completed', CONCAT('TXN-', @OrdAminah), '9012' FROM Orders WHERE OrderID = @OrdAminah;
+
+-- Order 5: Processing (Not Eligible)
+EXEC sp_AddOrUpdateCartItem @AminahID, 8, 1;
+EXEC sp_AddOrUpdateCartItem @AminahID, 9, 1;
+EXEC sp_PlaceOrder @AminahID, @AminahAddr, 'Express', @OrdAminah OUTPUT;
+UPDATE Orders SET OrderStatus = 'Processing' WHERE OrderID = @OrdAminah;
+INSERT INTO Payment (OrderID, PaymentMethod, PaymentAmount, PaymentStatus, TransactionID, CardLast4Digits)
+SELECT @OrdAminah, 'COD', OrderTotal, 'Pending', NULL, NULL FROM Orders WHERE OrderID = @OrdAminah;
+
+-- Order 6: Pending (Not Eligible)
+EXEC sp_AddOrUpdateCartItem @AminahID, 12, 1;
+EXEC sp_PlaceOrder @AminahID, @AminahAddr, 'Standard', @OrdAminah OUTPUT;
+-- Default status is Pending
+INSERT INTO Payment (OrderID, PaymentMethod, PaymentAmount, PaymentStatus, TransactionID, CardLast4Digits)
+SELECT @OrdAminah, 'COD', OrderTotal, 'Pending', NULL, NULL FROM Orders WHERE OrderID = @OrdAminah;
+
+-- Order 7: Pending (Not Eligible)
+EXEC sp_AddOrUpdateCartItem @AminahID, 15, 3;
+EXEC sp_PlaceOrder @AminahID, @AminahAddr, 'Standard', @OrdAminah OUTPUT;
+-- Default status is Pending
+INSERT INTO Payment (OrderID, PaymentMethod, PaymentAmount, PaymentStatus, TransactionID, CardLast4Digits)
+SELECT @OrdAminah, 'Bank Transfer', OrderTotal, 'Pending', NULL, NULL FROM Orders WHERE OrderID = @OrdAminah;
+
+GO
+
+-- ==============================================================
+-- ADD USER MARYAM AND 9 VARIED ORDERS
+-- ==============================================================
+DECLARE @MaryamID INT;
+DECLARE @MaryamAddr INT;
+DECLARE @OrdMaryam INT;
+
+-- 1. Register Maryam
+EXEC sp_RegisterCustomer 
+    @CustomerName = 'Maryam', @LastName = 'Khan', 
+    @Email = 'maryam@email.com', @PlainPassword = 'Password123!', 
+    @PhoneNo = '03331122334', @DateOfBirth = '1995-05-15', 
+    @CustomerID = @MaryamID OUTPUT;
+
+-- 2. Add Address
+INSERT INTO Address (CustomerID, Street, City, PostalCode, Country, IsDefault) 
+VALUES (@MaryamID, 'House 12, Street 4, F-7', 'Islamabad', '44000', 'Pakistan', 1);
+
+SELECT @MaryamAddr = AddressID FROM Address WHERE CustomerID = @MaryamID;
+
+-- 3. Create 9 Orders
+
+-- Order 1: Delivered
+EXEC sp_AddOrUpdateCartItem @MaryamID, 1, 1;
+EXEC sp_PlaceOrder @MaryamID, @MaryamAddr, 'Standard', @OrdMaryam OUTPUT;
+UPDATE Orders SET OrderStatus = 'Delivered', OrderDate = DATEADD(day, -20, SYSUTCDATETIME()) WHERE OrderID = @OrdMaryam;
+INSERT INTO Payment (OrderID, PaymentMethod, PaymentAmount, PaymentStatus, TransactionID, CardLast4Digits)
+SELECT @OrdMaryam, 'Credit Card', OrderTotal, 'Completed', CONCAT('TXN-M-', @OrdMaryam), '4242' FROM Orders WHERE OrderID = @OrdMaryam;
+
+-- Order 2: Delivered
+EXEC sp_AddOrUpdateCartItem @MaryamID, 2, 1;
+EXEC sp_PlaceOrder @MaryamID, @MaryamAddr, 'Standard', @OrdMaryam OUTPUT;
+UPDATE Orders SET OrderStatus = 'Delivered', OrderDate = DATEADD(day, -18, SYSUTCDATETIME()) WHERE OrderID = @OrdMaryam;
+INSERT INTO Payment (OrderID, PaymentMethod, PaymentAmount, PaymentStatus, TransactionID, CardLast4Digits)
+SELECT @OrdMaryam, 'Credit Card', OrderTotal, 'Completed', CONCAT('TXN-M-', @OrdMaryam), '4242' FROM Orders WHERE OrderID = @OrdMaryam;
+
+-- Order 3: Delivered
+EXEC sp_AddOrUpdateCartItem @MaryamID, 3, 1;
+EXEC sp_PlaceOrder @MaryamID, @MaryamAddr, 'Express', @OrdMaryam OUTPUT;
+UPDATE Orders SET OrderStatus = 'Delivered', OrderDate = DATEADD(day, -15, SYSUTCDATETIME()) WHERE OrderID = @OrdMaryam;
+INSERT INTO Payment (OrderID, PaymentMethod, PaymentAmount, PaymentStatus, TransactionID, CardLast4Digits)
+SELECT @OrdMaryam, 'Debit Card', OrderTotal, 'Completed', CONCAT('TXN-M-', @OrdMaryam), '8888' FROM Orders WHERE OrderID = @OrdMaryam;
+
+-- Order 4: Delivered
+EXEC sp_AddOrUpdateCartItem @MaryamID, 5, 2;
+EXEC sp_PlaceOrder @MaryamID, @MaryamAddr, 'Standard', @OrdMaryam OUTPUT;
+UPDATE Orders SET OrderStatus = 'Delivered', OrderDate = DATEADD(day, -10, SYSUTCDATETIME()) WHERE OrderID = @OrdMaryam;
+INSERT INTO Payment (OrderID, PaymentMethod, PaymentAmount, PaymentStatus, TransactionID, CardLast4Digits)
+SELECT @OrdMaryam, 'Credit Card', OrderTotal, 'Completed', CONCAT('TXN-M-', @OrdMaryam), '4242' FROM Orders WHERE OrderID = @OrdMaryam;
+
+-- Order 5: Delivered
+EXEC sp_AddOrUpdateCartItem @MaryamID, 7, 1;
+EXEC sp_PlaceOrder @MaryamID, @MaryamAddr, 'Standard', @OrdMaryam OUTPUT;
+UPDATE Orders SET OrderStatus = 'Delivered', OrderDate = DATEADD(day, -5, SYSUTCDATETIME()) WHERE OrderID = @OrdMaryam;
+INSERT INTO Payment (OrderID, PaymentMethod, PaymentAmount, PaymentStatus, TransactionID, CardLast4Digits)
+SELECT @OrdMaryam, 'COD', OrderTotal, 'Completed', CONCAT('TXN-M-', @OrdMaryam), NULL FROM Orders WHERE OrderID = @OrdMaryam;
+
+-- Order 6: Delivered
+EXEC sp_AddOrUpdateCartItem @MaryamID, 8, 1;
+EXEC sp_PlaceOrder @MaryamID, @MaryamAddr, 'Standard', @OrdMaryam OUTPUT;
+UPDATE Orders SET OrderStatus = 'Delivered', OrderDate = DATEADD(day, -2, SYSUTCDATETIME()) WHERE OrderID = @OrdMaryam;
+INSERT INTO Payment (OrderID, PaymentMethod, PaymentAmount, PaymentStatus, TransactionID, CardLast4Digits)
+SELECT @OrdMaryam, 'Credit Card', OrderTotal, 'Completed', CONCAT('TXN-M-', @OrdMaryam), '4242' FROM Orders WHERE OrderID = @OrdMaryam;
+
+-- Order 7: Pending
+EXEC sp_AddOrUpdateCartItem @MaryamID, 12, 1;
+EXEC sp_PlaceOrder @MaryamID, @MaryamAddr, 'Standard', @OrdMaryam OUTPUT;
+-- Status defaults to Pending
+INSERT INTO Payment (OrderID, PaymentMethod, PaymentAmount, PaymentStatus, TransactionID, CardLast4Digits)
+SELECT @OrdMaryam, 'Bank Transfer', OrderTotal, 'Pending', NULL, NULL FROM Orders WHERE OrderID = @OrdMaryam;
+
+-- Order 8: Pending
+EXEC sp_AddOrUpdateCartItem @MaryamID, 15, 1;
+EXEC sp_PlaceOrder @MaryamID, @MaryamAddr, 'Standard', @OrdMaryam OUTPUT;
+-- Status defaults to Pending
+INSERT INTO Payment (OrderID, PaymentMethod, PaymentAmount, PaymentStatus, TransactionID, CardLast4Digits)
+SELECT @OrdMaryam, 'COD', OrderTotal, 'Pending', NULL, NULL FROM Orders WHERE OrderID = @OrdMaryam;
+
+-- Order 9: Cancelled
+EXEC sp_AddOrUpdateCartItem @MaryamID, 4, 1;
+EXEC sp_PlaceOrder @MaryamID, @MaryamAddr, 'Standard', @OrdMaryam OUTPUT;
+UPDATE Orders SET OrderStatus = 'Cancelled' WHERE OrderID = @OrdMaryam;
+INSERT INTO Payment (OrderID, PaymentMethod, PaymentAmount, PaymentStatus, TransactionID, CardLast4Digits)
+SELECT @OrdMaryam, 'Credit Card', OrderTotal, 'Failed', NULL, NULL FROM Orders WHERE OrderID = @OrdMaryam;
+
+GO
+
+-- ==============================================================
+-- ADD USER ALEESHA AND 9 VARIED ORDERS
+-- ==============================================================
+DECLARE @AleeshaID INT;
+DECLARE @AleeshaAddr INT;
+DECLARE @OrdAleesha INT;
+
+-- 1. Register Aleesha
+EXEC sp_RegisterCustomer 
+    @CustomerName = 'Aleesha', @LastName = 'Khan', 
+    @Email = 'aleesha@email.com', @PlainPassword = 'Password123!', 
+    @PhoneNo = '03217654321', @DateOfBirth = '2000-01-01', 
+    @CustomerID = @AleeshaID OUTPUT;
+
+-- 2. Add Address
+INSERT INTO Address (CustomerID, Street, City, PostalCode, Country, IsDefault) 
+VALUES (@AleeshaID, 'Apartment 101, H-Block', 'Lahore', '54000', 'Pakistan', 1);
+
+SELECT @AleeshaAddr = AddressID FROM Address WHERE CustomerID = @AleeshaID;
+
+-- 3. Create 9 Orders
+
+-- Order 1: Delivered
+EXEC sp_AddOrUpdateCartItem @AleeshaID, 4, 1;
+EXEC sp_PlaceOrder @AleeshaID, @AleeshaAddr, 'Standard', @OrdAleesha OUTPUT;
+UPDATE Orders SET OrderStatus = 'Delivered', OrderDate = DATEADD(day, -25, SYSUTCDATETIME()) WHERE OrderID = @OrdAleesha;
+INSERT INTO Payment (OrderID, PaymentMethod, PaymentAmount, PaymentStatus, TransactionID, CardLast4Digits)
+SELECT @OrdAleesha, 'Credit Card', OrderTotal, 'Completed', CONCAT('TXN-A-', @OrdAleesha), '1111' FROM Orders WHERE OrderID = @OrdAleesha;
+
+-- Order 2: Delivered
+EXEC sp_AddOrUpdateCartItem @AleeshaID, 5, 2;
+EXEC sp_PlaceOrder @AleeshaID, @AleeshaAddr, 'Standard', @OrdAleesha OUTPUT;
+UPDATE Orders SET OrderStatus = 'Delivered', OrderDate = DATEADD(day, -22, SYSUTCDATETIME()) WHERE OrderID = @OrdAleesha;
+INSERT INTO Payment (OrderID, PaymentMethod, PaymentAmount, PaymentStatus, TransactionID, CardLast4Digits)
+SELECT @OrdAleesha, 'Debit Card', OrderTotal, 'Completed', CONCAT('TXN-A-', @OrdAleesha), '2222' FROM Orders WHERE OrderID = @OrdAleesha;
+
+-- Order 3: Delivered
+EXEC sp_AddOrUpdateCartItem @AleeshaID, 1, 1;
+EXEC sp_PlaceOrder @AleeshaID, @AleeshaAddr, 'Express', @OrdAleesha OUTPUT;
+UPDATE Orders SET OrderStatus = 'Delivered', OrderDate = DATEADD(day, -20, SYSUTCDATETIME()) WHERE OrderID = @OrdAleesha;
+INSERT INTO Payment (OrderID, PaymentMethod, PaymentAmount, PaymentStatus, TransactionID, CardLast4Digits)
+SELECT @OrdAleesha, 'Credit Card', OrderTotal, 'Completed', CONCAT('TXN-A-', @OrdAleesha), '1111' FROM Orders WHERE OrderID = @OrdAleesha;
+
+-- Order 4: Delivered
+EXEC sp_AddOrUpdateCartItem @AleeshaID, 8, 1;
+EXEC sp_PlaceOrder @AleeshaID, @AleeshaAddr, 'Standard', @OrdAleesha OUTPUT;
+UPDATE Orders SET OrderStatus = 'Delivered', OrderDate = DATEADD(day, -15, SYSUTCDATETIME()) WHERE OrderID = @OrdAleesha;
+INSERT INTO Payment (OrderID, PaymentMethod, PaymentAmount, PaymentStatus, TransactionID, CardLast4Digits)
+SELECT @OrdAleesha, 'COD', OrderTotal, 'Completed', CONCAT('TXN-A-', @OrdAleesha), NULL FROM Orders WHERE OrderID = @OrdAleesha;
+
+-- Order 5: Delivered
+EXEC sp_AddOrUpdateCartItem @AleeshaID, 6, 1;
+EXEC sp_PlaceOrder @AleeshaID, @AleeshaAddr, 'Standard', @OrdAleesha OUTPUT;
+UPDATE Orders SET OrderStatus = 'Delivered', OrderDate = DATEADD(day, -10, SYSUTCDATETIME()) WHERE OrderID = @OrdAleesha;
+INSERT INTO Payment (OrderID, PaymentMethod, PaymentAmount, PaymentStatus, TransactionID, CardLast4Digits)
+SELECT @OrdAleesha, 'Credit Card', OrderTotal, 'Completed', CONCAT('TXN-A-', @OrdAleesha), '1111' FROM Orders WHERE OrderID = @OrdAleesha;
+
+-- Order 6: Delivered
+EXEC sp_AddOrUpdateCartItem @AleeshaID, 2, 3;
+EXEC sp_PlaceOrder @AleeshaID, @AleeshaAddr, 'Standard', @OrdAleesha OUTPUT;
+UPDATE Orders SET OrderStatus = 'Delivered', OrderDate = DATEADD(day, -5, SYSUTCDATETIME()) WHERE OrderID = @OrdAleesha;
+INSERT INTO Payment (OrderID, PaymentMethod, PaymentAmount, PaymentStatus, TransactionID, CardLast4Digits)
+SELECT @OrdAleesha, 'Credit Card', OrderTotal, 'Completed', CONCAT('TXN-A-', @OrdAleesha), '3333' FROM Orders WHERE OrderID = @OrdAleesha;
+
+-- Order 7: Pending
+EXEC sp_AddOrUpdateCartItem @AleeshaID, 9, 1;
+EXEC sp_PlaceOrder @AleeshaID, @AleeshaAddr, 'Standard', @OrdAleesha OUTPUT;
+-- Status defaults to Pending
+INSERT INTO Payment (OrderID, PaymentMethod, PaymentAmount, PaymentStatus, TransactionID, CardLast4Digits)
+SELECT @OrdAleesha, 'Bank Transfer', OrderTotal, 'Pending', NULL, NULL FROM Orders WHERE OrderID = @OrdAleesha;
+
+-- Order 8: Pending
+EXEC sp_AddOrUpdateCartItem @AleeshaID, 10, 1;
+EXEC sp_PlaceOrder @AleeshaID, @AleeshaAddr, 'Standard', @OrdAleesha OUTPUT;
+-- Status defaults to Pending
+INSERT INTO Payment (OrderID, PaymentMethod, PaymentAmount, PaymentStatus, TransactionID, CardLast4Digits)
+SELECT @OrdAleesha, 'COD', OrderTotal, 'Pending', NULL, NULL FROM Orders WHERE OrderID = @OrdAleesha;
+
+-- Order 9: Cancelled
+EXEC sp_AddOrUpdateCartItem @AleeshaID, 3, 1;
+EXEC sp_PlaceOrder @AleeshaID, @AleeshaAddr, 'Standard', @OrdAleesha OUTPUT;
+UPDATE Orders SET OrderStatus = 'Cancelled' WHERE OrderID = @OrdAleesha;
+INSERT INTO Payment (OrderID, PaymentMethod, PaymentAmount, PaymentStatus, TransactionID, CardLast4Digits)
+SELECT @OrdAleesha, 'Credit Card', OrderTotal, 'Failed', NULL, NULL FROM Orders WHERE OrderID = @OrdAleesha;
+
+GO
+
+-- ==============================================================
+-- ADD MORE DELIVERED ORDERS FOR AMINAH
+-- ==============================================================
+DECLARE @AminahID_More INT;
+DECLARE @AminahAddr_More INT;
+DECLARE @OrdAminah_More INT;
+
+SELECT @AminahID_More = CustomerID FROM Customer WHERE Email = 'aminah@email.com';
+SELECT @AminahAddr_More = AddressID FROM Address WHERE CustomerID = @AminahID_More AND IsDefault = 1;
+
+-- Extra Delivered Order 1
+EXEC sp_AddOrUpdateCartItem @AminahID_More, 13, 1;
+EXEC sp_PlaceOrder @AminahID_More, @AminahAddr_More, 'Standard', @OrdAminah_More OUTPUT;
+UPDATE Orders SET OrderStatus = 'Delivered', OrderDate = DATEADD(day, -5, SYSUTCDATETIME()) WHERE OrderID = @OrdAminah_More;
+INSERT INTO Payment (OrderID, PaymentMethod, PaymentAmount, PaymentStatus, TransactionID, CardLast4Digits)
+SELECT @OrdAminah_More, 'Credit Card', OrderTotal, 'Completed', CONCAT('TXN-', @OrdAminah_More), '1234' FROM Orders WHERE OrderID = @OrdAminah_More;
+
+-- Extra Delivered Order 2
+EXEC sp_AddOrUpdateCartItem @AminahID_More, 14, 1;
+EXEC sp_PlaceOrder @AminahID_More, @AminahAddr_More, 'Standard', @OrdAminah_More OUTPUT;
+UPDATE Orders SET OrderStatus = 'Delivered', OrderDate = DATEADD(day, -10, SYSUTCDATETIME()) WHERE OrderID = @OrdAminah_More;
+INSERT INTO Payment (OrderID, PaymentMethod, PaymentAmount, PaymentStatus, TransactionID, CardLast4Digits)
+SELECT @OrdAminah_More, 'Credit Card', OrderTotal, 'Completed', CONCAT('TXN-', @OrdAminah_More), '1234' FROM Orders WHERE OrderID = @OrdAminah_More;
+
+-- Extra Delivered Order 3
+EXEC sp_AddOrUpdateCartItem @AminahID_More, 20, 1;
+EXEC sp_PlaceOrder @AminahID_More, @AminahAddr_More, 'Standard', @OrdAminah_More OUTPUT;
+UPDATE Orders SET OrderStatus = 'Delivered', OrderDate = DATEADD(day, -15, SYSUTCDATETIME()) WHERE OrderID = @OrdAminah_More;
+INSERT INTO Payment (OrderID, PaymentMethod, PaymentAmount, PaymentStatus, TransactionID, CardLast4Digits)
+SELECT @OrdAminah_More, 'Credit Card', OrderTotal, 'Completed', CONCAT('TXN-', @OrdAminah_More), '1234' FROM Orders WHERE OrderID = @OrdAminah_More;
+
+-- Extra Delivered Order 4
+EXEC sp_AddOrUpdateCartItem @AminahID_More, 25, 2;
+EXEC sp_PlaceOrder @AminahID_More, @AminahAddr_More, 'Standard', @OrdAminah_More OUTPUT;
+UPDATE Orders SET OrderStatus = 'Delivered', OrderDate = DATEADD(day, -20, SYSUTCDATETIME()) WHERE OrderID = @OrdAminah_More;
+INSERT INTO Payment (OrderID, PaymentMethod, PaymentAmount, PaymentStatus, TransactionID, CardLast4Digits)
+SELECT @OrdAminah_More, 'Credit Card', OrderTotal, 'Completed', CONCAT('TXN-', @OrdAminah_More), '1234' FROM Orders WHERE OrderID = @OrdAminah_More;
+
+-- Extra Delivered Order 5
+EXEC sp_AddOrUpdateCartItem @AminahID_More, 30, 2;
+EXEC sp_PlaceOrder @AminahID_More, @AminahAddr_More, 'Standard', @OrdAminah_More OUTPUT;
+UPDATE Orders SET OrderStatus = 'Delivered', OrderDate = DATEADD(day, -25, SYSUTCDATETIME()) WHERE OrderID = @OrdAminah_More;
+INSERT INTO Payment (OrderID, PaymentMethod, PaymentAmount, PaymentStatus, TransactionID, CardLast4Digits)
+SELECT @OrdAminah_More, 'Credit Card', OrderTotal, 'Completed', CONCAT('TXN-', @OrdAminah_More), '1234' FROM Orders WHERE OrderID = @OrdAminah_More;
 
 GO

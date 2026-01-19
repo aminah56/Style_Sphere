@@ -56,56 +56,38 @@ router.get('/customer/:customerId', async (req, res) => {
 router.post('/:orderId/return', async (req, res) => {
     try {
         console.log('[Return] Processing return request for Order:', req.params.orderId);
-        console.log('[Return] Payload:', req.body);
         const { orderId } = req.params;
-        const { requestType, reason, exchangeMode, items } = req.body;
+        const { requestType } = req.body; // Expect 'Refunded' or 'Exchanged' (Exact match to DB status)
 
-        // items: [{ orderItemId: 1, quantity: 1, replacementVariantId: null }]
+        // Map frontend terms to DB statuses if needed, but assuming frontend sends 'Refunded' or 'Exchanged'
+        // or frontend sends 'Refund'/'Exchange' and we map.
+        let dbStatus = requestType;
+        if (requestType === 'Refund') dbStatus = 'Refunded';
+        else if (requestType === 'Exchange') dbStatus = 'Exchanged';
 
         const pool = await getPool();
-        const transaction = new sql.Transaction(pool);
+        const request = pool.request();
 
-        await transaction.begin();
+        request.input('OrderID', sql.Int, orderId);
+        request.input('RequestType', sql.NVarChar(20), dbStatus);
 
+        // Execute Stoed Procedure which contains the logic:
+        // 1. Checks if OrderStatus is 'Delivered'. Throws if not.
+        // 2. Checks if already 'Refunded'/'Exchanged' -> Throws.
+        // 3. Updates status and restocks.
         try {
-            // 1. Create Return Request Header
-            const requestResult = await transaction.request()
-                .input('OrderID', sql.Int, orderId)
-                .input('RequestType', sql.NVarChar, requestType) // 'Refund' or 'Exchange'
-                .input('Reason', sql.NVarChar, reason)
-                .input('Status', sql.NVarChar, 'Pending')
-                .input('ExchangeMode', sql.NVarChar, exchangeMode || null) // 'InStore' or 'Online'
-                .query(`
-                    INSERT INTO ReturnRequest (OrderID, RequestType, Reason, Status, ExchangeMode)
-                    OUTPUT INSERTED.ReturnID
-                    VALUES (@OrderID, @RequestType, @Reason, @Status, @ExchangeMode)
-                `);
+            await request.execute('sp_ProcessOrderReturn');
+            res.json({ message: `Order marked as ${dbStatus} successfully.` });
 
-            const returnId = requestResult.recordset[0].ReturnID;
+        } catch (sqlErr) {
+            // SQL errors (THROW 51xxx) come here.
+            // Check for our custom error codes or message
+            console.error('SQL Error during return:', sqlErr);
 
-            // 2. Insert Items
-            for (const item of items) {
-                await transaction.request()
-                    .input('ReturnID', sql.Int, returnId)
-                    .input('OrderItemID', sql.Int, item.orderItemId)
-                    .input('Quantity', sql.Int, item.quantity)
-                    .input('ReplacementVariantID', sql.Int, item.replacementVariantId || null)
-                    .query(`
-                        INSERT INTO ReturnRequestItem (ReturnID, OrderItemID, Quantity, ReplacementVariantID)
-                        VALUES (@ReturnID, @OrderItemID, @Quantity, @ReplacementVariantID)
-                    `);
+            if (sqlErr.number >= 51000) {
+                return res.status(400).json({ message: sqlErr.message });
             }
-
-            await transaction.commit();
-
-            res.status(201).json({
-                message: 'Return request submitted successfully',
-                returnId
-            });
-
-        } catch (err) {
-            await transaction.rollback();
-            throw err;
+            throw sqlErr;
         }
 
     } catch (error) {

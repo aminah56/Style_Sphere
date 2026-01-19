@@ -8,10 +8,10 @@ const RefundExchange = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { type: typeParam, step: stepParam } = useParams();
-    
+
     // Get order and request type from location state
     const { order, requestType: initialRequestType } = location.state || {};
-    
+
     const initialStep = stepParam ? parseInt(stepParam) : 1;
     const [step, setStep] = useState(initialStep);
     const [selectedItems, setSelectedItems] = useState(location.state?.selectedItems || []);
@@ -42,7 +42,7 @@ const RefundExchange = () => {
     // Navigate to step
     const goToStep = (newStep) => {
         setStep(newStep);
-        navigate(`/refund-exchange/${requestType}/${newStep}`, { 
+        navigate(`/refund-exchange/${requestType}/${newStep}`, {
             replace: true,
             state: { order, requestType, selectedItems, reason, exchangeMode, selectedReplacement, bankDetails }
         });
@@ -70,8 +70,8 @@ const RefundExchange = () => {
             catalogApi.getProducts(params)
                 .then(({ data }) => {
                     const filtered = data.filter(prod => {
-                        const prodPrice = typeof prod.Price === 'string' 
-                            ? parseFloat(prod.Price.replace(/[^0-9.]/g, '')) 
+                        const prodPrice = typeof prod.Price === 'string'
+                            ? parseFloat(prod.Price.replace(/[^0-9.]/g, ''))
                             : prod.Price;
                         return prodPrice >= params.minPrice && prodPrice <= params.maxPrice;
                     });
@@ -154,7 +154,8 @@ const RefundExchange = () => {
             goToStep(finalStep);
         } catch (error) {
             console.error('Submission failed:', error);
-            alert('Failed to submit request. Please try again.');
+            const errorMessage = error.response?.data?.message || 'Failed to submit request. Please try again.';
+            alert(errorMessage);
         } finally {
             setIsSubmitting(false);
         }
@@ -486,11 +487,11 @@ const RefundExchange = () => {
                             {replacementProducts.length > 0 ? (
                                 <div className="grid grid-cols-2 gap-4 max-h-[450px] overflow-y-auto pr-2">
                                     {replacementProducts.map(prod => {
-                                        const prodPrice = typeof prod.Price === 'string' 
-                                            ? parseFloat(prod.Price.replace(/[^0-9.]/g, '')) 
+                                        const prodPrice = typeof prod.Price === 'string'
+                                            ? parseFloat(prod.Price.replace(/[^0-9.]/g, ''))
                                             : prod.Price;
                                         const isSelected = selectedReplacement?.ProductID === prod.ProductID;
-                                        
+
                                         return (
                                             <div
                                                 key={prod.ProductID}
@@ -498,10 +499,10 @@ const RefundExchange = () => {
                                                 onClick={() => setSelectedReplacement(prod)}
                                             >
                                                 <div className="relative aspect-[3/4] mb-3 rounded-lg overflow-hidden bg-gray-100">
-                                                    <img 
-                                                        src={prod.ImageURL || 'https://via.placeholder.com/150'} 
-                                                        alt={prod.Name} 
-                                                        className="w-full h-full object-cover" 
+                                                    <img
+                                                        src={prod.ImageURL || 'https://via.placeholder.com/150'}
+                                                        alt={prod.Name}
+                                                        className="w-full h-full object-cover"
                                                     />
                                                     {isSelected && (
                                                         <div className="absolute top-2 right-2 bg-purple-600 text-white rounded-full p-1">
@@ -669,18 +670,18 @@ const RefundExchange = () => {
     <div class="receipt">${receiptContent}</div>
 </body>
 </html>`;
-                                                
+
                                                 // Create a blob with the HTML content
                                                 const blob = new Blob([fullHTML], { type: 'text/html' });
                                                 const url = URL.createObjectURL(blob);
-                                                
+
                                                 // Create a temporary anchor element and trigger download
                                                 const link = document.createElement('a');
                                                 link.href = url;
                                                 link.download = `StyleSphere_Exchange_Receipt_${order.OrderID}_${Date.now()}.html`;
                                                 document.body.appendChild(link);
                                                 link.click();
-                                                
+
                                                 // Clean up
                                                 document.body.removeChild(link);
                                                 URL.revokeObjectURL(url);
@@ -773,11 +774,11 @@ const RefundExchange = () => {
                         <button
                             onClick={handleNext}
                             disabled={
-                                (step === 1 && selectedItems.length === 0) || 
-                                (step === 2 && !reason) || 
+                                (step === 1 && selectedItems.length === 0) ||
+                                (step === 2 && !reason) ||
                                 (step === 3 && requestType === 'refund' && (!bankDetails.accountHolderName || !bankDetails.accountNumber || !bankDetails.bankName)) ||
-                                (step === 3 && requestType === 'exchange' && !exchangeMode) || 
-                                (step === 4 && exchangeMode === 'online' && !selectedReplacement) || 
+                                (step === 3 && requestType === 'exchange' && !exchangeMode) ||
+                                (step === 4 && exchangeMode === 'online' && !selectedReplacement) ||
                                 isSubmitting
                             }
                             className="px-8 py-2.5 bg-purple-900 text-white rounded-lg font-medium text-sm tracking-wide uppercase hover:bg-purple-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2"
