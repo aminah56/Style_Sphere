@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StyleSphere - E-commerce Project</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap');
+
+        :root {
+            --primary: #581c87;
+            --secondary: #f3e8ff;
+            --text: #1f2937;
+            --bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: var(--secondary);
+            color: var(--text);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(88, 28, 135, 0.1) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(192, 132, 252, 0.1) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(88, 28, 135, 0.1) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgba(192, 132, 252, 0.1) 0px, transparent 50%);
+        }
+
+        .container {
+            text-align: center;
+            background: white;
+            padding: 4rem;
+            border-radius: 2rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            max-width: 600px;
+            width: 90%;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 3.5rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+            font-weight: 600;
+        }
+
+        .tagline {
+            font-size: 1.25rem;
+            color: #6b7280;
+            margin-bottom: 2.5rem;
+            line-height: 1.6;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background-color: #dcfce7;
+            color: #166534;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 2rem;
+        }
+
+        p {
+            margin-bottom: 1.5rem;
+            color: #4b5563;
+        }
+
+        .footer {
+            margin-top: 3rem;
+            font-size: 0.875rem;
+            color: #9ca3af;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <span class="status-badge">Project Repository</span>
+        <h1>StyleSphere</h1>
+        <p class="tagline">A modern, full-stack e-commerce experience.</p>
+        
+        <p>This is the root of the project repository.</p>
+        <p>The application source code is organized as follows:</p>
+        
+        <div style="display: flex; justify-content: center; gap: 1rem; margin: 2rem 0;">
+            <div style="padding: 1rem; background: #faf5ff; border-radius: 1rem; width: 120px;">
+                <div style="font-weight: 600; color: var(--primary);">Frontend</div>
+                <div style="font-size: 0.8rem; color: #6b7280;">/frontend</div>
+            </div>
+            <div style="padding: 1rem; background: #faf5ff; border-radius: 1rem; width: 120px;">
+                <div style="font-weight: 600; color: var(--primary);">Backend</div>
+                <div style="font-size: 0.8rem; color: #6b7280;">/backend</div>
+            </div>
+        </div>
+
+        <p style="font-size: 0.9rem; color: #6b7280;">
+            <em>Note: To view the application, please build and deploy the <strong>frontend</strong> directory.</em>
+        </p>
+
+        <div class="footer">
+            &copy; 2026 StyleSphere Team
+        </div>
+    </div>
+</body>
+</html>

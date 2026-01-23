@@ -58,7 +58,16 @@ app.use((err, _req, res, _next) => {
     res.status(500).json({ message: 'Internal server error' });
 });
 
-app.listen(PORT, () => {
-    console.log(`API server running on port ${PORT}`);
+app.get('/', (req, res) => {
+    res.send('StyleSphere Backend is running');
 });
+
+// Conditionally start the server if this file is run directly
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`API server running on port ${PORT}`);
+    });
+}
+
+module.exports = app;
 
