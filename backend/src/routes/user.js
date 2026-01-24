@@ -14,6 +14,17 @@ const validate = (req, res, next) => {
 };
 
 // Start or update user address (simplification: assume adding new address for checkout)
+router.get('/', async (req, res) => {
+    try {
+        const pool = await getPool();
+        const result = await pool.request().query("SELECT TOP 10 * FROM Customer");
+        res.json(result.recordset);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Database error" });
+    }
+});
+
 router.post(
     '/address',
     [

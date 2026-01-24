@@ -29,6 +29,7 @@ app.use('/images', (req, res, next) => {
     next();
 }, express.static(path.resolve(__dirname, '../../images')));
 
+
 app.get('/api/health', async (_req, res) => {
     try {
         await getPool();
@@ -37,6 +38,11 @@ app.get('/api/health', async (_req, res) => {
         res.status(500).json({ status: 'error', message: error.message });
     }
 });
+
+app.get('/api', (req, res) => {
+    res.json({ message: 'StyleSphere API is running. Use /api/catalog, /api/auth, etc.' });
+});
+
 
 const userRoutes = require('./routes/user'); // Add this import
 
